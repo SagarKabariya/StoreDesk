@@ -2,6 +2,8 @@ package Product;
 
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.GraphicsEnvironment;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 
 import javax.swing.JFrame;
@@ -36,6 +38,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.beans.PropertyVetoException;
+
 import javax.swing.JComboBox;
 import javax.swing.JButton;
 import javax.swing.JTextPane;
@@ -50,8 +54,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import javax.swing.JCheckBox;
+import javax.swing.border.MatteBorder;
+import java.awt.Color;
+import javax.swing.border.BevelBorder;
 
-public class Product_Modify extends JInternalFrame {
+public class Product_Modify extends JFrame {
 	private JPanel contentPane;
 	private JTextField txt_upc;
 	private JTextField txt_itemno;
@@ -78,15 +85,17 @@ public class Product_Modify extends JInternalFrame {
 	ResultSet rs=null,r2,r3,r4;
 	private JTextField txt_itemname;
 	private JTextField txtupdatestock;
-	private JTable table_history;
 	JComboBox cmb_main_cat = new JComboBox();
 	JComboBox cmb_cate = new JComboBox();
-	private JTable table_stock;
 	private JTextField txt_retail_price;
 	private JTextField txt_cost_price;
 	private JTextField textField_2;
 	private JTable table_alt;
 	private JTable table_matrix;
+	private JTextField txtdivide;
+	private JTextField txtrpriceMat;
+	JPanel Matrix_panel;
+	JComboBox cmbsize;
 	/**
 	 * Launch the application.
 	 */
@@ -96,6 +105,7 @@ public class Product_Modify extends JInternalFrame {
 				try {
 					Product_Modify frame = new Product_Modify();		
 					frame.setVisible(true);
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -107,43 +117,45 @@ public class Product_Modify extends JInternalFrame {
 	 * Create the frame.
 	 */
 	public Product_Modify() {
+		//setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		
+		//setClosable(true);
 		try{
 	    	conn = (Connection) ConnectionManager.getConnection();
 				 }catch(Exception e1){
 					 e1.printStackTrace();
 				 }
-			 
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		setBounds(0, 0, screenSize.width, screenSize.height);
-		int wid = screenSize.width;
-		int hei=screenSize.height;
+		Rectangle winSize = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();	 
+		int wid = winSize.width;
+		int hei=winSize.height;
+		
+		//Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		setBounds(0, 0, wid, hei);
 		getContentPane().setLayout(null);
 		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPane.setBorder(new MatteBorder(2, 2, 2, 2, (Color) Color.BLACK));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
-		 ButtonGroup buttonGroup = new ButtonGroup();
-		
-	
-		
+				
+		ButtonGroup buttonGroup = new ButtonGroup();
+			
 		JPanel panel_find = new JPanel();
-		panel_find.setBounds(0, 0, screenSize.width, screenSize.height-50);
+		panel_find.setBounds(0, 0, wid, hei-30);
 		contentPane.add(panel_find);
 		panel_find.setLayout(null);
 		
 		JLabel lblUpc = new JLabel("UPC");
 		lblUpc.setFont(new Font("Arial Black", Font.BOLD, 14));
-		lblUpc.setBounds(10, 11, 55, 25);
+		lblUpc.setBounds(10, 13, 55, 38);
 		panel_find.add(lblUpc);
 		
 		JLabel lblItemNo = new JLabel("Item No");
 		lblItemNo.setFont(new Font("Arial Black", Font.BOLD, 14));
-		lblItemNo.setBounds(207, 11, 86, 25);
+		lblItemNo.setBounds(321, 13, 86, 38);
 		panel_find.add(lblItemNo);
 		
 		txt_upc = new JTextField();
-		txt_upc.setFont(new Font("Tahoma", Font.BOLD, 13));
+		txt_upc.setFont(new Font("Tahoma", Font.BOLD, 20));
 		txt_upc.addActionListener(new ActionListener(){
 	        public void actionPerformed(ActionEvent e){
 	        	String temp=txt_upc.getText();
@@ -152,7 +164,7 @@ public class Product_Modify extends JInternalFrame {
 					searchtable(Integer.valueOf(temp),1);
 				}
 	        }});
-		txt_upc.setBounds(55, 11, 122, 24);
+		txt_upc.setBounds(77, 13, 212, 38);
 		panel_find.add(txt_upc);
 		txt_upc.setColumns(10);
 		
@@ -172,8 +184,8 @@ public class Product_Modify extends JInternalFrame {
 				
 			}
 		});
-		txt_itemno.setFont(new Font("Tahoma", Font.BOLD, 13));
-		txt_itemno.setBounds(279, 12, 111, 24);
+		txt_itemno.setFont(new Font("Tahoma", Font.BOLD, 20));
+		txt_itemno.setBounds(404, 13, 212, 38);
 		panel_find.add(txt_itemno);
 		txt_itemno.setColumns(10);
 		
@@ -184,21 +196,22 @@ public class Product_Modify extends JInternalFrame {
 				bindtablename();
 			}
 		});
-		txt_name.setFont(new Font("Tahoma", Font.BOLD, 13));
-		txt_name.setBounds(479, 11, 222, 25);
+		txt_name.setFont(new Font("Tahoma", Font.BOLD, 20));
+		txt_name.setBounds(849, 13, 336, 38);
 		panel_find.add(txt_name);
 		txt_name.setColumns(10);
 		
-		JLabel lblName = new JLabel("Name");
+		JLabel lblName = new JLabel("Name of Product");
 		lblName.setFont(new Font("Arial Black", Font.BOLD, 14));
-		lblName.setBounds(425, 11, 55, 25);
+		lblName.setBounds(672, 13, 165, 38);
 		panel_find.add(lblName);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 47, screenSize.width-40, screenSize.height-70);
+		scrollPane.setBounds(10, 83, wid-20, panel_find.getHeight()-100);
 		panel_find.add(scrollPane);
 		
 		table_list = new JTable();
+		table_list.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		table_list.setColumnSelectionAllowed(true);
 		table_list.setCellSelectionEnabled(true);
 		table_list.setShowGrid(false);
@@ -219,74 +232,105 @@ public class Product_Modify extends JInternalFrame {
 			dispose();
 			}
 		});
-		btnClose.setBounds(711, 11, 89, 23);
+		btnClose.setBounds(1766, 13, 117, 57);
 		panel_find.add(btnClose);
-		
-		
-		
-		
-		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setLocation(0, 0);
-		tabbedPane.setSize(screenSize.width, screenSize.height-50);
+		tabbedPane.setSize(wid, hei);
 		contentPane.add(tabbedPane);
 		tabbedPane.setVisible(false);
+		tabbedPane.setFont(new Font("Arial",20,20));
 		JPanel panel_1 = new JPanel();
 		tabbedPane.addTab("Name & Category", null, panel_1, null);
 		panel_1.setLayout(null);
 		
+		JButton btnFindAgain_1 = new JButton("Find Again");
+		btnFindAgain_1.setBounds(20, panel_find.getHeight()-147, 118, 87);
+		panel_1.add(btnFindAgain_1);
+		
+		JSeparator separator_1 = new JSeparator();
+		separator_1.setBounds((wid-350)-((wid*50)/100), 388, 700, 2);
+		panel_1.add(separator_1);
+		
+		JPanel panel = new JPanel();
+		panel.setBounds((wid-414)-((wid*50)/100), 412, 829, 99);
+		panel_1.add(panel);
+		panel.setLayout(null);
+		
+		JLabel label = new JLabel("Company Name");
+		label.setBounds(0, 4, 142, 26);
+		panel.add(label);
+		label.setFont(new Font("Arial", Font.BOLD, 14));
+		
+		JLabel label_2 = new JLabel("Change Company");
+		label_2.setBounds(0, 47, 142, 41);
+		panel.add(label_2);
+		label_2.setFont(new Font("Arial", Font.BOLD, 14));
+		
+		cmb_comp = new JComboBox();
+		cmb_comp.setBounds(152, 47, 280, 41);
+		panel.add(cmb_comp);
+		cmb_comp.setFont(new Font("Arial", Font.BOLD, 14));
+		
+		lbl_company = new JLabel("");
+		lbl_company.setBounds(152, 0, 280, 30);
+		panel.add(lbl_company);
+		lbl_company.setFont(new Font("Arial", Font.BOLD, 16));
+		
+		JButton button = new JButton("Change ");
+		button.setBounds(448, 46, 96, 42);
+		panel.add(button);
+		
+		JPanel panel_2 = new JPanel();
+		panel_2.setBounds((wid-413)-((wid*50)/100), 28, 827, 332);
+		panel_1.add(panel_2);
+		panel_2.setLayout(null);
+		
 		JLabel lblName_1 = new JLabel("Main Category");
+		lblName_1.setBounds(12, 13, 118, 26);
+		panel_2.add(lblName_1);
 		lblName_1.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblName_1.setBounds(10, 11, 118, 26);
-		panel_1.add(lblName_1);
 		
 		JLabel lblSubCategory = new JLabel("Sub Category");
+		lblSubCategory.setBounds(312, 13, 118, 26);
+		panel_2.add(lblSubCategory);
 		lblSubCategory.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblSubCategory.setBounds(310, 11, 118, 26);
-		panel_1.add(lblSubCategory);
 		
 		JLabel lblItemName = new JLabel("Item Name");
+		lblItemName.setBounds(12, 186, 118, 41);
+		panel_2.add(lblItemName);
 		lblItemName.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblItemName.setBounds(10, 84, 118, 26);
-		panel_1.add(lblItemName);
-		cmb_main_cat.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				
-			}
-		});
-		
-		
-		cmb_main_cat.setBounds(138, 45, 142, 20);
-		panel_1.add(cmb_main_cat);
-		
-		
-		cmb_cate.setBounds(436, 45, 142, 20);
-		panel_1.add(cmb_cate);
+		cmb_main_cat.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		cmb_main_cat.setBounds(84, 100, 220, 41);
+		panel_2.add(cmb_main_cat);
+		cmb_cate.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		cmb_cate.setBounds(362, 100, 240, 41);
+		panel_2.add(cmb_cate);
 		
 		txt_itemname = new JTextField();
+		txt_itemname.setBounds(160, 186, 442, 41);
+		panel_2.add(txt_itemname);
 		txt_itemname.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		txt_itemname.setBounds(138, 76, 442, 41);
-		panel_1.add(txt_itemname);
 		txt_itemname.setColumns(10);
 		
 		JButton btnUpdate = new JButton("Update");
+		btnUpdate.setBounds(669, 186, 96, 55);
+		panel_2.add(btnUpdate);
 		btnUpdate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				updatename();
 			}
 		});
 		btnUpdate.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnUpdate.setBounds(612, 127, 96, 55);
-		panel_1.add(btnUpdate);
 		
 		JLabel lblItemDescripation = new JLabel("Item Descripation");
+		lblItemDescripation.setBounds(12, 240, 142, 74);
+		panel_2.add(lblItemDescripation);
 		lblItemDescripation.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblItemDescripation.setBounds(10, 141, 142, 26);
-		panel_1.add(lblItemDescripation);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(138, 118, 442, 74);
-		panel_1.add(scrollPane_1);
+		scrollPane_1.setBounds(160, 240, 442, 74);
+		panel_2.add(scrollPane_1);
 		
 		txt_desc = new JTextArea();
 		scrollPane_1.setViewportView(txt_desc);
@@ -294,64 +338,41 @@ public class Product_Modify extends JInternalFrame {
 		txt_desc.setLineWrap(true);
 		
 		JLabel lblItemNumber = new JLabel("Item Number");
+		lblItemNumber.setHorizontalAlignment(SwingConstants.CENTER);
+		lblItemNumber.setBounds(614, 13, 196, 26);
+		panel_2.add(lblItemNumber);
 		lblItemNumber.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblItemNumber.setBounds(612, 11, 128, 26);
-		panel_1.add(lblItemNumber);
 		
 		lbl_itemno = new JLabel("");
-		lbl_itemno.setFont(new Font("Arial", Font.BOLD, 16));
-		lbl_itemno.setBounds(612, 33, 96, 37);
-		panel_1.add(lbl_itemno);
+		lbl_itemno.setHorizontalAlignment(SwingConstants.CENTER);
+		lbl_itemno.setBounds(614, 52, 196, 37);
+		panel_2.add(lbl_itemno);
+		lbl_itemno.setFont(new Font("Tahoma", Font.BOLD, 20));
 		
 		lbl_main_c = new JLabel("");
-		lbl_main_c.setBounds(138, 11, 142, 22);
-		panel_1.add(lbl_main_c);
+		lbl_main_c.setHorizontalAlignment(SwingConstants.CENTER);
+		lbl_main_c.setBounds(84, 48, 220, 39);
+		panel_2.add(lbl_main_c);
 		
 		lbl_sub_cate = new JLabel("");
-		lbl_sub_cate.setBounds(438, 11, 142, 22);
-		panel_1.add(lbl_sub_cate);
+		lbl_sub_cate.setHorizontalAlignment(SwingConstants.CENTER);
+		lbl_sub_cate.setBounds(362, 52, 240, 35);
+		panel_2.add(lbl_sub_cate);
 		
 		JLabel lblChange = new JLabel("change");
+		lblChange.setBounds(12, 100, 62, 41);
+		panel_2.add(lblChange);
 		lblChange.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblChange.setBounds(66, 41, 62, 25);
-		panel_1.add(lblChange);
-		
-		JButton btnFindAgain_1 = new JButton("Find Again");
-		btnFindAgain_1.setBounds(10, hei-140, 118, 87);
-		panel_1.add(btnFindAgain_1);
-		
-		JLabel label = new JLabel("Company Name");
-		label.setFont(new Font("Arial", Font.BOLD, 14));
-		label.setBounds(10, 225, 142, 21);
-		panel_1.add(label);
-		
-		lbl_company = new JLabel("");
-		lbl_company.setFont(new Font("Arial", Font.BOLD, 16));
-		lbl_company.setBounds(162, 221, 280, 30);
-		panel_1.add(lbl_company);
-		
-		JLabel label_2 = new JLabel("Change Company");
-		label_2.setFont(new Font("Arial", Font.BOLD, 14));
-		label_2.setBounds(10, 267, 142, 21);
-		panel_1.add(label_2);
-		
-		cmb_comp = new JComboBox();
-		cmb_comp.setFont(new Font("Arial", Font.BOLD, 14));
-		cmb_comp.setBounds(162, 268, 280, 30);
-		panel_1.add(cmb_comp);
-		
-		JButton button = new JButton("Change ");
+		cmb_main_cat.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+			}
+		});
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				updatecompany();
 			}
 		});
-		button.setBounds(458, 267, 89, 30);
-		panel_1.add(button);
-		
-		JSeparator separator_1 = new JSeparator();
-		separator_1.setBounds(10, 212, 700, 2);
-		panel_1.add(separator_1);
 		
 		JPanel panel_3 = new JPanel();
 		tabbedPane.addTab("Stock & Updates", null, panel_3, null);
@@ -507,170 +528,227 @@ public class Product_Modify extends JInternalFrame {
 		panel_3.add(button_2);
 		
 		JSeparator separator_2 = new JSeparator();
-		separator_2.setBounds(10, 195, 700, 2);
+		separator_2.setBounds(10, 169, 700, 2);
 		panel_3.add(separator_2);
-		
-		JPanel panel_5 = new JPanel();
-		tabbedPane.addTab("Product History", null, panel_5, null);
-		panel_5.setLayout(null);
-		
-		JButton btnToday = new JButton("Today");
-		btnToday.setFont(new Font("Arial", Font.BOLD, 14));
-		btnToday.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				tablehistoryfill(1);
-			}
-		});
-		btnToday.setBounds(10, 11, 143, 36);
-		panel_5.add(btnToday);
-		
-		JButton btnAll = new JButton("All");
-		btnAll.setFont(new Font("Arial", Font.BOLD, 14));
-		btnAll.setBounds(163, 11, 143, 36);
-		panel_5.add(btnAll);
-		
-		JButton btnChangeOrder = new JButton("Asce/Des.");
-		btnChangeOrder.setFont(new Font("Arial", Font.BOLD, 14));
-		btnChangeOrder.setBounds(316, 11, 143, 36);
-		panel_5.add(btnChangeOrder);
-		
-		JScrollPane scrollPane_2 = new JScrollPane();
-		scrollPane_2.setBounds(10, 58, screenSize.width-50, 200);
-		panel_5.add(scrollPane_2);
-		
-		table_history = new JTable();
-		table_history.setModel(new DefaultTableModel(
-			new Object[][] {
-			},
-			new String[] {
-				"Invoice ID","Date/Time","Employee","Quantity","Disocount","Sold Price",""
-			}
-		));
-		scrollPane_2.setViewportView(table_history);
-		
-		JPanel Extra = new JPanel();
-		tabbedPane.addTab("Stock Details", null, Extra, null);
-		Extra.setLayout(null);
-		
-		JScrollPane scrollPane_3 = new JScrollPane();
-		scrollPane_3.setBounds(10, 40, wid-40, hei-150);
-		Extra.add(scrollPane_3);
-		
-		table_stock = new JTable();
-		table_stock.setModel(new DefaultTableModel(
-			new Object[][] {
-			},
-			new String[] {
-				"Date of Recieve", "Quantity","Cost Price", "Employee","Vendor"
-			}
-		));
-		scrollPane_3.setViewportView(table_stock);
-		
-		JButton btnNewButton = new JButton("Load");
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-					DefaultTableModel model = (DefaultTableModel)table_stock.getModel();
-					model.setRowCount(0);
-					try {
-						s4=conn.prepareStatement("select item_receive.date_time,item_receive.Quantity,item_receive.cost_price,employee.Emp_name,vendors.Vendor_name "
-								+ "from item_receive,vendors,employee,items "
-								+ "where items.Item_id=item_receive.Item_id and item_receive.Employee_id=employee.Employee_id "
-								+ "and item_receive.vendor_id=vendors.Vendor_id and items.Item_id = "+MainItemNo);
-						r3=s4.executeQuery();						
-						while(r3.next()){
-							model.addRow(new Object[]{r3.getString("date_time"),r3.getString("Quantity"),r3.getString("cost_price"),r3.getString("Emp_name"),r3.getString("Vendor_name")});
-						}
-					} catch (SQLException e3) {
-						e3.printStackTrace();
-					}
-			}
-		});
-		btnNewButton.setBounds(10, 0, 106, 39);
-		Extra.add(btnNewButton);
 		
 		JPanel panel_Matrix = new JPanel();
 		tabbedPane.addTab("Matrix & Alternative", null, panel_Matrix, null);
 		panel_Matrix.setLayout(null);
 		
 		JScrollPane scrollPane_4 = new JScrollPane();
-		scrollPane_4.setBounds(10, 41, 189, 198);
+		scrollPane_4.setBounds(10, 41, 320, 198);
 		panel_Matrix.add(scrollPane_4);
 		
 		table_alt = new JTable();
-		table_alt.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				update_alt((int) table_alt.getValueAt(table_alt.getSelectedRow(), 0));
-			}
-		});
+		table_alt.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		table_alt.setModel(new DefaultTableModel(
 			new Object[][] {
 			},
 			new String[] {
-				"ID", "Key(Touch Key for Delete)"
+				"Alternative Barcode"
 			}
 		));
+		table_alt.setCellSelectionEnabled(true);
+		table_alt.setRowHeight(20);
 		scrollPane_4.setViewportView(table_alt);
-		table_alt.getColumnModel().getColumn(0).setWidth(0);
-		table_alt.getColumnModel().getColumn(0).setMinWidth(0);
-		table_alt.getColumnModel().getColumn(0).setMaxWidth(0);
 		
 		JLabel lblAlternativeKey = new JLabel("Alternative Key");
+		lblAlternativeKey.setHorizontalAlignment(SwingConstants.CENTER);
 		lblAlternativeKey.setFont(new Font("Arial", Font.BOLD, 14));
-		lblAlternativeKey.setBounds(10, 11, 129, 24);
+		lblAlternativeKey.setBounds(10, 11, 320, 24);
 		panel_Matrix.add(lblAlternativeKey);
 		
 		JButton btnNewButton_1 = new JButton("Add Key");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				update_alt(0);
+				try {
+					int Alter = Integer.parseInt(JOptionPane.showInputDialog("Enter New Barcode for this Product"));						                      
+					 update_alt(1,Alter);
+				} catch (Exception z) { 
+						JOptionPane.showMessageDialog(null, "Please Enter Only Numbers in Barcode. NO CHARCTERS ALLOW",
+								"Barcode error", JOptionPane.ERROR_MESSAGE);
+						return;
+					}
 			}
 		});
-		btnNewButton_1.setBounds(10, 244, 102, 51);
+		btnNewButton_1.setBounds(10, 245, 102, 51);
 		panel_Matrix.add(btnNewButton_1);
 		
+		JButton btnUpdate_2 = new JButton("Update");
+		btnUpdate_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			if(table_alt.isRowSelected(table_alt.getSelectedRow()))
+			{
+				update_alt(2,(int) table_alt.getValueAt(table_alt.getSelectedRow(), 0));
+			}
+			else
+			{
+				JOptionPane.showMessageDialog(null, "First Select Bacode from Table which you want to Update.");
+			}
+			}
+		});
+		btnUpdate_2.setBounds(122, 245, 102, 51);
+		panel_Matrix.add(btnUpdate_2);
+		
+		JButton btnRemove = new JButton("Remove");
+		btnRemove.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(table_alt.isRowSelected(table_alt.getSelectedRow()))
+				{
+					update_alt(3,(int) table_alt.getValueAt(table_alt.getSelectedRow(), 0));
+				}
+			}
+		});
+		btnRemove.setBounds(233, 245, 97, 51);
+		panel_Matrix.add(btnRemove);
+		
+		JPanel panel_4 = new JPanel();
+		panel_4.setBounds(342, 10, 460, 307);
+		panel_Matrix.add(panel_4);
+		panel_4.setLayout(null);
+		
 		JLabel lblMatrix = new JLabel("Matrix");
+		lblMatrix.setBounds(0, 0, 429, 24);
+		panel_4.add(lblMatrix);
+		lblMatrix.setHorizontalAlignment(SwingConstants.CENTER);
 		lblMatrix.setFont(new Font("Arial", Font.BOLD, 14));
-		lblMatrix.setBounds(294, 11, 129, 24);
-		panel_Matrix.add(lblMatrix);
 		
 		JButton btnAddMatrix = new JButton("Add Matrix");
-		btnAddMatrix.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				update_matrix(0);
-			}
-		});
-		btnAddMatrix.setBounds(251, 244, 102, 51);
-		panel_Matrix.add(btnAddMatrix);
+		btnAddMatrix.setBounds(0, 234, 136, 51);
+		panel_4.add(btnAddMatrix);
 		
 		JScrollPane scrollPane_5 = new JScrollPane();
-		scrollPane_5.setBounds(251, 41, 236, 198);
-		panel_Matrix.add(scrollPane_5);
+		scrollPane_5.setBounds(0, 30, 429, 198);
+		panel_4.add(scrollPane_5);
 		
 		table_matrix = new JTable();
-		table_matrix.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				update_matrix((int) table_matrix.getValueAt(table_alt.getSelectedRow(), 0));
-			}
-		});
-		
-		scrollPane_5.setViewportView(table_matrix);
+		table_matrix.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		table_matrix.setModel(new DefaultTableModel(
 			new Object[][] {
 			},
 			new String[] {
-				"ID", "Size", "Retail Price"
+				"Matrix_id","Item_id","size_id", "Packing Name", "Part by", "Retail Price"
 			}
 		));
+		table_matrix.setCellSelectionEnabled(true);		
+		scrollPane_5.setViewportView(table_matrix);
 		table_matrix.getColumnModel().getColumn(0).setWidth(0);
 		table_matrix.getColumnModel().getColumn(0).setMinWidth(0);
 		table_matrix.getColumnModel().getColumn(0).setMaxWidth(0); 
+		
+		table_matrix.getColumnModel().getColumn(1).setWidth(0);
+		table_matrix.getColumnModel().getColumn(1).setMinWidth(0);
+		table_matrix.getColumnModel().getColumn(1).setMaxWidth(0);
+		
+		table_matrix.getColumnModel().getColumn(2).setWidth(0);
+		table_matrix.getColumnModel().getColumn(2).setMinWidth(0);
+		table_matrix.getColumnModel().getColumn(2).setMaxWidth(0);
+		table_matrix.setRowHeight(25);
+		
+		JButton btnUpdateMatrix = new JButton("Update Matrix");
+		btnUpdateMatrix.setBounds(147, 234, 136, 51);
+		panel_4.add(btnUpdateMatrix);
+		
+		JButton btnRemoveMatrix = new JButton("Remove Matrix");
+		btnRemoveMatrix.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(table_matrix.isRowSelected(table_matrix.getSelectedRow()))
+				{
+				int ans=JOptionPane.showConfirmDialog(null,"Are you sure you want to Delete this Matrix?");
+					if(ans==0)
+					{
+						update_matrix(3, table_matrix.getSelectedRow());
+					}
+				}else {
+					JOptionPane.showMessageDialog(null, "Select row for update value");
+				}
+			}
+		});
+		btnRemoveMatrix.setBounds(293, 234, 136, 51);
+		panel_4.add(btnRemoveMatrix);
+		
+		Matrix_panel = new JPanel();
+		Matrix_panel.setBounds(342, 330, 371, 211);
+		panel_Matrix.add(Matrix_panel);
+		Matrix_panel.setLayout(null);
+		Matrix_panel.setVisible(false);
+		
+		JLabel lblSelectSize = new JLabel("Select Size");
+		lblSelectSize.setFont(new Font("Tahoma", Font.PLAIN, 17));
+		lblSelectSize.setBounds(12, 13, 115, 34);
+		Matrix_panel.add(lblSelectSize);
+		
+		cmbsize = new JComboBox();
+		cmbsize.setFont(new Font("Tahoma", Font.PLAIN, 17));
+		cmbsize.setBounds(139, 13, 214, 34);
+		Matrix_panel.add(cmbsize);
+		
+		JButton btnAdd = new JButton("Add");
+		btnAdd.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(btnAdd.getText()=="Add")
+				{				
+				update_matrix(1,1);
+				}else {
+					update_matrix(2, table_matrix.getSelectedRow());
+				}
+			}
+		});
+		btnAdd.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		btnAdd.setBounds(139, 162, 208, 34);
+		Matrix_panel.add(btnAdd);
+		
+		txtdivide = new JTextField();
+		txtdivide.setFont(new Font("Tahoma", Font.PLAIN, 17));
+		txtdivide.setBounds(139, 60, 214, 34);
+		Matrix_panel.add(txtdivide);
+		txtdivide.setColumns(10);
+		
+		JLabel lblNewLabel = new JLabel("Divide by");
+		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 17));
+		lblNewLabel.setBounds(12, 60, 115, 34);
+		Matrix_panel.add(lblNewLabel);
+		
+		JLabel lblRetailPrice = new JLabel("Retail Price");
+		lblRetailPrice.setFont(new Font("Tahoma", Font.PLAIN, 17));
+		lblRetailPrice.setBounds(12, 107, 115, 34);
+		Matrix_panel.add(lblRetailPrice);
+		
+		txtrpriceMat = new JTextField();
+		txtrpriceMat.setBounds(139, 107, 214, 34);
+		Matrix_panel.add(txtrpriceMat);
+		txtrpriceMat.setColumns(10);
+		
+		btnUpdateMatrix.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(table_matrix.isRowSelected(table_matrix.getSelectedRow()))
+				{
+					btnAdd.setText("Update");
+					Matrix_panel.setVisible(true);
+					String query = "select item_size_sign from item_size";
+					bindcategory(query,4);
+					cmbsize.setSelectedItem(table_matrix.getValueAt(table_matrix.getSelectedRow(),3));
+					txtdivide.setText(table_matrix.getValueAt(table_matrix.getSelectedRow(), 4).toString());
+					txtrpriceMat.setText(table_matrix.getValueAt(table_matrix.getSelectedRow(), 5).toString());
+					
+				}else {
+					JOptionPane.showMessageDialog(null, "Select row for update value");
+				}
+			}
+		});
+		btnAddMatrix.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				txtdivide.setText("");
+				txtrpriceMat.setText("");
+				btnAdd.setText("Add");
+				Matrix_panel.setVisible(true);
+				String query = "select item_size_sign from item_size";
+				bindcategory(query,4);
+			}
+		});
 		btnFindAgain_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				((DefaultTableModel) table_list.getModel()).setRowCount(0);
-				((DefaultTableModel) table_history.getModel()).setRowCount(0);
 				((DefaultTableModel) table_list.getModel()).setRowCount(0);
 				txt_itemno.setEnabled(true);
 				txt_itemno.setText("");
@@ -679,7 +757,7 @@ public class Product_Modify extends JInternalFrame {
 				txtupdatestock.setText("");
 					tabbedPane.setVisible(false);
 					tabbedPane.setEnabled(false);
-					panel_find.setVisible(true);
+				//	panel_find.setVisible(true);
 			}
 		});
 		
@@ -705,54 +783,85 @@ public class Product_Modify extends JInternalFrame {
 			}
 		});;
 	}
-	
-	
-	
 
-	protected void update_matrix(int i) {
-		try{
-			if(i==0)
-		{
-			//i==1 means add items
-			int no = Integer.parseInt(JOptionPane.showInputDialog("Barcode"));
-			s2=conn.prepareStatement("INSERT INTO `item_quantity_matrix`(`item_id`, `Size_id`, `Price`) "
-					+ "VALUES ()");
-			s2.execute();
-		}
-		else
-		{
-			st1 = conn.createStatement();
-			String sql = "UPDATE `item_quantity_matrix` SET `Size_id`=[value-3],`Price`=[value-4] WHERE `Matrix_id`="+i;
-			st1.executeUpdate(sql);
-			JOptionPane.showMessageDialog(null, "Changed", "ALERT", 1);
-		}
+	
+	protected void update_matrix(int i, int rowvalue) {
+			try{
+				if(i==1)
+				{
+					String size=cmbsize.getSelectedItem().toString();
+					
+					//i==1 means add items
+					s2=conn.prepareStatement("INSERT INTO `item_quantity_matrix`(`Size_id`,`item_id`, `Devide_By`, `Price`) "
+							+ "VALUES ((select Item_size_id from item_size where Item_size_sign like '"+size+"'),"+MainItemNo+","+txtdivide.getText()+","+txtrpriceMat.getText()+")");
+					//System.out.println(s2);
+					s2.execute();
+					Matrix_panel.setVisible(false);
+					FillMatrix(MainItemNo);
+					
+				}
+				else if(i==2)
+				{
+					int matrix_id=(Integer) table_matrix.getValueAt(rowvalue, 0);
+					
+					st1 = conn.createStatement();
+					String sql = "UPDATE item_quantity_matrix set `Size_id`=(select Item_size_id from item_size where Item_size_sign like '"+cmbsize.getSelectedItem()+"'), "
+							+ "`Devide_By`="+txtdivide.getText()+", `Price`="+txtrpriceMat.getText()+" WHERE item_quantity_matrix.Matrix_id = "+matrix_id;
+					//System.out.println(st1);
+					st1.executeUpdate(sql);
+					JOptionPane.showMessageDialog(null, "Matrix Changed", "ALERT", 1);
+					FillMatrix(MainItemNo);
+					Matrix_panel.setVisible(false);
+				}
+				else if(i==3)
+				{
+					PreparedStatement pp1 = conn.prepareStatement("DELETE FROM `item_quantity_matrix` WHERE `Matrix_id`="+table_matrix.getValueAt(rowvalue, 0));
+					pp1.executeUpdate();
+					FillMatrix(MainItemNo);
+				}
+				txtdivide.setText("");
+				txtrpriceMat.setText("");
 			} catch (SQLException e1) {
 					e1.printStackTrace();
 			}
 	}
 
-	protected void update_alt(int i) {
+	protected void update_alt(int i, int Alter) {
 		try {
-			if(i==0)
+			if(i==1)
 			{
 				//i==1 means add items
-				int no = Integer.parseInt(JOptionPane.showInputDialog("Barcode"));
 				s2=conn.prepareStatement("INSERT INTO `alternative`(`item_id`, `Alt_barcode`) "
-						+ "VALUES ()");
+						+ "VALUES ("+MainItemNo+","+Alter+")");
 				s2.execute();
+				FillAlter(MainItemNo);
 			}
-			else
+			else if(i==2)
 			{
+				int NewBa;
+				try {
+					NewBa = Integer.parseInt(JOptionPane.showInputDialog("Enter New Barcode for this Product"));						                      
+					} catch (Exception z) { 
+						JOptionPane.showMessageDialog(null, "Please Enter Only Numbers in Barcode. NO CHARCTERS ALLOW",
+								"Barcode error", JOptionPane.ERROR_MESSAGE);
+						return;
+					}
 				
 				st1 = conn.createStatement();
-				String sql = "UPDATE `alternative` SET `Alt_barcode`=[value-3] WHERE `item_id` ="+table_alt.getValueAt(table_alt.getSelectedRow(),0);
+				String sql = "UPDATE `alternative` SET `Alt_barcode`="+NewBa+" WHERE  Alt_barcode="+table_alt.getValueAt(table_alt.getSelectedRow(),0);
 				st1.executeUpdate(sql);
-				JOptionPane.showMessageDialog(null, "Changed", "ALERT", 1);
+				FillAlter(MainItemNo);
+				JOptionPane.showMessageDialog(null, "Barcode is Changed", "ALERT", 1);
 			}
-				} catch (SQLException e1) {
-						e1.printStackTrace();
-				}
-		
+			else if(i==3)
+			{
+				PreparedStatement pp1 = conn.prepareStatement("DELETE FROM `alternative` WHERE `Alt_barcode` = "+Alter);
+				pp1.executeUpdate();
+				FillAlter(MainItemNo);
+			}
+		} catch (SQLException e1) {
+					e1.printStackTrace();
+		}
 	}
 
 	void updatestock()
@@ -884,24 +993,6 @@ private void updatename() {
 		}
 		
 	}
-
-protected void tablehistoryfill(int i) {
-	DefaultTableModel model = (DefaultTableModel)table_history.getModel();
-	model.setRowCount(0);
-	try {
-		s4=conn.prepareStatement("SELECT invoice.Invoice_id, invoice.DateTime, employee.Emp_name, invoice_details.Quantity, invoice_details.Extra_Discount, "
-				+ "invoice_details.Item_price, invoice_details.Final_items_amount "
-				+ "from invoice,invoice_details,employee where invoice.Invoice_id=invoice_details.Invoice_id "
-				+ "and invoice.Employee_id=employee.Employee_id and invoice_details.Item_id="+MainItemNo);
-		r3=s4.executeQuery();						
-		while(r3.next()){
-			model.addRow(new Object[]{r3.getString("Invoice_id"),r3.getString("DateTime"),r3.getString("Emp_name"),r3.getString("Quantity"),r3.getString("Extra_Discount"),r3.getString("Item_price"),r3.getString("Final_items_amount")});
-		}
-	} catch (SQLException e3) {
-		e3.printStackTrace();
-	}
-		
-	}
 	
 	void bindcategory(String query,int device)
 	{
@@ -923,9 +1014,12 @@ protected void tablehistoryfill(int i) {
 			{
 				cmb_cate.setModel(model);
 			}
-			else 
+			else if(device==3) 
 			{
 				cmb_comp.setModel(model);
+			}
+			else if(device==4) {
+				cmbsize.setModel(model);
 			}
 		} catch (SQLException e3) {
 			e3.printStackTrace();
@@ -1010,26 +1104,45 @@ protected void tablehistoryfill(int i) {
 			}
 			
 			//Matrix and alternative filiing
-			fillmatrix_alt(r3.getInt("Item_id"));
+			FillAlter(MainItemNo);
+			FillMatrix(MainItemNo);
 		} catch (SQLException e3) {
 			e3.printStackTrace();
 		}
 	}
 
-	private void fillmatrix_alt(int itnumber) {
-		String query = "SELECT Category_name FROM `category`"; 
-		String query2 = "SELECT sub_category_name FROM `sub_category`"; 
+	private void FillAlter(int itnumber) {
+		String query = "SELECT `Alt_barcode` FROM `alternative` WHERE `item_id` = "+MainItemNo; 
+	//	String query2 = "SELECT sub_category_name FROM `sub_category`"; 
 		PreparedStatement n1;
 		ResultSet n2;
-	  
+		DefaultTableModel model = (DefaultTableModel)table_alt.getModel();
+		model.setRowCount(0);
 		try {
-			s4=conn.prepareStatement(""+itnumber);
+			s4=conn.prepareStatement(query);
 			r3=s4.executeQuery();						
 			while(r3.next()){
-				MainItemNo=Integer.valueOf(r3.getString("Item_id"));
+				model.addRow(new Object[]{r3.getInt("Alt_barcode")});
 			}
 		} catch (SQLException e3) {
 			e3.printStackTrace();
 		}
-}
+	}
+	private void FillMatrix(int itnumber) {
+		String query = "SELECT item_quantity_matrix.Matrix_id,item_quantity_matrix.item_id,item_quantity_matrix.size_id,item_size.Item_size_sign,item_quantity_matrix.Devide_By, item_quantity_matrix.Price from item_size,item_quantity_matrix "
+							+ "where item_size.Item_size_id=item_quantity_matrix.Size_id AND item_quantity_matrix.item_id="+MainItemNo; 
+		PreparedStatement n1;
+		ResultSet n2;
+		DefaultTableModel model = (DefaultTableModel)table_matrix.getModel();
+		model.setRowCount(0);
+		try {
+			s4=conn.prepareStatement(query);
+			r3=s4.executeQuery();						
+			while(r3.next()){
+				model.addRow(new Object[]{r3.getInt(1),r3.getInt(2),r3.getInt(3),r3.getString(4),r3.getInt(5),r3.getDouble(6)});
+			}
+		} catch (SQLException e3) {
+			e3.printStackTrace();
+		}
+	}
 }

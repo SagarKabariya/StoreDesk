@@ -82,6 +82,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.JCheckBox;
 
+
 public class SecondWindow extends JFrame implements KeyListener{
 	DecimalFormat df = new DecimalFormat("#.###"); 
 	public static double remaining_change,entered_amount;
@@ -491,28 +492,6 @@ public class SecondWindow extends JFrame implements KeyListener{
 		panel_register.add(panel_history);
 		panel_history.setLayout(null);
 		
-		
-		JLabel lblLastTransection = new JLabel("Last Transection");
-		lblLastTransection.setBounds(88, 0, 109, 20);
-		panel_history.add(lblLastTransection);
-		
-		JLabel lblTotalItems = new JLabel("Total Items");
-		lblTotalItems.setBounds(10, 20, 85, 14);
-		panel_history.add(lblTotalItems);
-		
-		JLabel lblTotalAmount = new JLabel("Total Amount");
-		lblTotalAmount.setBounds(10, 36, 85, 14);
-		panel_history.add(lblTotalAmount);
-		
-		JLabel lblBillNo = new JLabel("Bill No");
-		lblBillNo.setBounds(10, 50, 46, 14);
-		panel_history.add(lblBillNo);
-		
-		JSeparator separator_1 = new JSeparator();
-		separator_1.setOrientation(SwingConstants.VERTICAL);
-		separator_1.setBounds(88, 18, 1, 46);
-		panel_history.add(separator_1);
-		
 		JLabel lblChange = new JLabel("Change");
 		lblChange.setBounds(214, 11, 76, 29);
 		panel_history.add(lblChange);
@@ -522,32 +501,6 @@ public class SecondWindow extends JFrame implements KeyListener{
 		lbl_change.setBounds(218, 33, 109, 39);
 		panel_history.add(lbl_change);
 		lbl_change.setFont(new Font("Arial Black", Font.BOLD, 20));
-		
-		lbl_last_BNO= new JLabel();
-		lbl_last_BNO.setBounds(98, 50, 99, 14);
-		panel_history.add(lbl_last_BNO);
-		
-		lbl_last_tot_amt = new JLabel();
-		lbl_last_tot_amt.setBounds(98, 35, 99, 14);
-		panel_history.add(lbl_last_tot_amt);
-		lbl_last_tot_amt.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		
-		lbl_last_tot_itm= new JLabel();
-		lbl_last_tot_itm.setBounds(98, 19, 99, 14);
-		panel_history.add(lbl_last_tot_itm);
-		lbl_last_tot_itm.setBackground(Color.LIGHT_GRAY);
-		lbl_last_tot_itm.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		
-		Btnlogin = new JButton("Login");
-		Btnlogin.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			getuserdata();
-			textField_focus.requestFocus();	
-			}
-		});
-		Btnlogin.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		Btnlogin.setBounds(10, 11, 89, 75);
-		panel_register.add(Btnlogin);
 		
 		JLabel label = new JLabel("Total Quantity");
 		label.setFont(new Font("Tahoma", Font.BOLD, 14));
@@ -568,6 +521,59 @@ public class SecondWindow extends JFrame implements KeyListener{
 		lblHandcraftedLabPvt.setFont(new Font("Tahoma", Font.BOLD, 16));
 		lblHandcraftedLabPvt.setBounds(68, 22, 242, 29);
 		panel_name.add(lblHandcraftedLabPvt);
+		
+		JPanel panel = new JPanel();
+		panel.setBounds(738, 0, 663, 97);
+		panel_register.add(panel);
+		panel.setLayout(null);
+		
+		
+		JLabel lblLastTransection = new JLabel("Last Transection");
+		lblLastTransection.setBounds(90, 13, 109, 20);
+		panel.add(lblLastTransection);
+		
+		JLabel lblTotalItems = new JLabel("Total Items");
+		lblTotalItems.setBounds(12, 33, 85, 14);
+		panel.add(lblTotalItems);
+		
+		JLabel lblTotalAmount = new JLabel("Total Amount");
+		lblTotalAmount.setBounds(12, 49, 85, 14);
+		panel.add(lblTotalAmount);
+		
+		JLabel lblBillNo = new JLabel("Bill No");
+		lblBillNo.setBounds(12, 63, 46, 14);
+		panel.add(lblBillNo);
+		
+		JSeparator separator_1 = new JSeparator();
+		separator_1.setBounds(90, 31, 1, 46);
+		panel.add(separator_1);
+		separator_1.setOrientation(SwingConstants.VERTICAL);
+		
+		lbl_last_BNO= new JLabel();
+		lbl_last_BNO.setBounds(100, 63, 99, 14);
+		panel.add(lbl_last_BNO);
+		
+		lbl_last_tot_amt = new JLabel();
+		lbl_last_tot_amt.setBounds(100, 48, 99, 14);
+		panel.add(lbl_last_tot_amt);
+		lbl_last_tot_amt.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		
+		lbl_last_tot_itm= new JLabel();
+		lbl_last_tot_itm.setBounds(100, 32, 99, 14);
+		panel.add(lbl_last_tot_itm);
+		lbl_last_tot_itm.setBackground(Color.LIGHT_GRAY);
+		lbl_last_tot_itm.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		
+		Btnlogin = new JButton("Login");
+		Btnlogin.setBounds(10, 7, 89, 75);
+		panel_register.add(Btnlogin);
+		Btnlogin.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			getuserdata();
+			textField_focus.requestFocus();	
+			}
+		});
+		Btnlogin.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		
 		table_register.addMouseListener(new MouseAdapter() {
 			@Override

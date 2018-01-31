@@ -2,6 +2,8 @@ package Product;
 
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.GraphicsEnvironment;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 
 import javax.swing.JFrame;
@@ -56,31 +58,25 @@ public class Product_Receive extends JInternalFrame {
 	private JTextField txt_upc;
 	private JTextField txt_itemno;
 	private JTextField txt_name;
-	JTextArea txt_desc;
 	private JTable table_list;
 	public int MainItemNo;
-	JLabel lbl_itemno;
 	JLabel lbl_current_stock;
 	JLabel lbl_last_r_date;
 	JLabel lbl_last_r_quan;
 	JLabel lbl_last_r_by ;
+	JLabel lbl_itemno;
+	JTextArea txt_desc;
 	JLabel lbl_sub_cate;
 	JLabel lbl_main_c;
 	JLabel lbl_company;
-	JLabel lbl_tax_amount;
-	JLabel lbl_tax_name;
-	JComboBox cmb_comp;
-	JComboBox comboBox;
+	private JTextField txt_itemname;
 	Connection conn=null;
 	PreparedStatement st=null,s2,s3,s4;
 	java.sql.Statement st1;
 	Statement st2,st3;
 	ResultSet rs=null,r2,r3,r4;
-	private JTextField txt_itemname;
 	private JTextField txtupdatestock;
 	private JTable table_history;
-	JComboBox cmb_main_cat = new JComboBox();
-	JComboBox cmb_cate = new JComboBox();
 	private JTable table_stock;
 	private JTextField txt_retail_price;
 	private JTextField txt_cost_price;
@@ -105,43 +101,46 @@ public class Product_Receive extends JInternalFrame {
 	 * Create the frame.
 	 */
 	public Product_Receive() {
+		setTitle("StoreDesk  Point-of-Sale  => Product Recieve ");
+		setClosable(true);
 		try{
 	    	conn = (Connection) ConnectionManager.getConnection();
 				 }catch(Exception e1){
 					 e1.printStackTrace();
 				 }
-			 
+		Rectangle winSize = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();	 
+		int wid = winSize.width;
+		wid=wid-20;
+		int hei=winSize.height;
+		hei=hei-((hei*10)/100);
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		setBounds(0, 0, screenSize.width, screenSize.height);
-		int wid = screenSize.width;
-		int hei=screenSize.height;
+		setBounds(0, 0, wid, hei);
+		
 		getContentPane().setLayout(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
-		 ButtonGroup buttonGroup = new ButtonGroup();
-		
-	
+		ButtonGroup buttonGroup = new ButtonGroup();
 		
 		JPanel panel_find = new JPanel();
-		panel_find.setBounds(0, 0, screenSize.width, screenSize.height-50);
+		panel_find.setBounds(0, 0, wid-10, hei-50);
 		contentPane.add(panel_find);
 		panel_find.setLayout(null);
+		//panel_find.setVisible(false);
 		
 		JLabel lblUpc = new JLabel("UPC");
-		lblUpc.setFont(new Font("Arial Black", Font.BOLD, 14));
-		lblUpc.setBounds(10, 11, 55, 25);
+		lblUpc.setFont(new Font("Tahoma", Font.BOLD, 17));
+		lblUpc.setBounds(10, 11, 86, 38);
 		panel_find.add(lblUpc);
 		
-		JLabel lblItemNo = new JLabel("Item No");
-		lblItemNo.setFont(new Font("Arial Black", Font.BOLD, 14));
-		lblItemNo.setBounds(207, 11, 86, 25);
+		JLabel lblItemNo = new JLabel("|       Item No");
+		lblItemNo.setFont(new Font("Tahoma", Font.BOLD, 17));
+		lblItemNo.setBounds(282, 11, 126, 38);
 		panel_find.add(lblItemNo);
 		
 		txt_upc = new JTextField();
-		txt_upc.setFont(new Font("Tahoma", Font.BOLD, 13));
+		txt_upc.setFont(new Font("Tahoma", Font.BOLD, 20));
 		txt_upc.addActionListener(new ActionListener(){
 	        public void actionPerformed(ActionEvent e){
 	        	String temp=txt_upc.getText();
@@ -150,7 +149,7 @@ public class Product_Receive extends JInternalFrame {
 					searchtable(Integer.valueOf(temp),1);
 				}
 	        }});
-		txt_upc.setBounds(55, 11, 122, 24);
+		txt_upc.setBounds(73, 11, 164, 38);
 		panel_find.add(txt_upc);
 		txt_upc.setColumns(10);
 		
@@ -170,8 +169,8 @@ public class Product_Receive extends JInternalFrame {
 				
 			}
 		});
-		txt_itemno.setFont(new Font("Tahoma", Font.BOLD, 13));
-		txt_itemno.setBounds(279, 12, 111, 24);
+		txt_itemno.setFont(new Font("Tahoma", Font.BOLD, 20));
+		txt_itemno.setBounds(420, 12, 164, 37);
 		panel_find.add(txt_itemno);
 		txt_itemno.setColumns(10);
 		
@@ -182,21 +181,22 @@ public class Product_Receive extends JInternalFrame {
 				bindtablename();
 			}
 		});
-		txt_name.setFont(new Font("Tahoma", Font.BOLD, 13));
-		txt_name.setBounds(479, 11, 222, 25);
+		txt_name.setFont(new Font("Tahoma", Font.BOLD, 20));
+		txt_name.setBounds(803, 11, 222, 37);
 		panel_find.add(txt_name);
 		txt_name.setColumns(10);
 		
-		JLabel lblName = new JLabel("Name");
-		lblName.setFont(new Font("Arial Black", Font.BOLD, 14));
-		lblName.setBounds(425, 11, 55, 25);
+		JLabel lblName = new JLabel("|         Name");
+		lblName.setFont(new Font("Tahoma", Font.BOLD, 17));
+		lblName.setBounds(665, 11, 126, 38);
 		panel_find.add(lblName);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 47, screenSize.width-40, screenSize.height-70);
+		scrollPane.setBounds(10, 55, wid-30, hei-120);
 		panel_find.add(scrollPane);
 		
 		table_list = new JTable();
+		table_list.setFont(new Font("Tahoma", Font.PLAIN, 17));
 		table_list.setColumnSelectionAllowed(true);
 		table_list.setCellSelectionEnabled(true);
 		table_list.setShowGrid(false);
@@ -212,12 +212,13 @@ public class Product_Receive extends JInternalFrame {
 		));
 		
 		JButton btnClose = new JButton("Close");
+		btnClose.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		btnClose.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 			dispose();
 			}
 		});
-		btnClose.setBounds(711, 11, 89, 23);
+		btnClose.setBounds(1748, 11, 142, 31);
 		panel_find.add(btnClose);
 		
 		table_list.getColumnModel().getColumn(0).setPreferredWidth(50);
@@ -226,373 +227,7 @@ public class Product_Receive extends JInternalFrame {
 		table_list.getColumnModel().getColumn(3).setPreferredWidth(100);
 		table_list.getColumnModel().getColumn(4).setPreferredWidth(50);
 		
-		
-		
-		
-		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		tabbedPane.setLocation(0, 0);
-		tabbedPane.setSize(screenSize.width, screenSize.height-50);
-		contentPane.add(tabbedPane);
-		tabbedPane.setVisible(false);
-		JPanel panel_1 = new JPanel();
-		tabbedPane.addTab("Name & Category", null, panel_1, null);
-		panel_1.setLayout(null);
-		
-		JLabel lblName_1 = new JLabel("Main Category");
-		lblName_1.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblName_1.setBounds(10, 11, 118, 26);
-		panel_1.add(lblName_1);
-		
-		JLabel lblSubCategory = new JLabel("Sub Category");
-		lblSubCategory.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblSubCategory.setBounds(310, 11, 118, 26);
-		panel_1.add(lblSubCategory);
-		
-		JLabel lblItemName = new JLabel("Item Name");
-		lblItemName.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblItemName.setBounds(10, 84, 118, 26);
-		panel_1.add(lblItemName);
-		cmb_main_cat.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				
-			}
-		});
-		
-		
-		cmb_main_cat.setBounds(138, 45, 142, 20);
-		panel_1.add(cmb_main_cat);
-		
-		
-		cmb_cate.setBounds(436, 45, 142, 20);
-		panel_1.add(cmb_cate);
-		
-		txt_itemname = new JTextField();
-		txt_itemname.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		txt_itemname.setBounds(138, 76, 442, 41);
-		panel_1.add(txt_itemname);
-		txt_itemname.setColumns(10);
-		
-		JButton btnUpdate = new JButton("Update");
-		btnUpdate.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				updatename();
-			}
-		});
-		btnUpdate.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnUpdate.setBounds(612, 127, 96, 55);
-		panel_1.add(btnUpdate);
-		
-		JLabel lblItemDescripation = new JLabel("Item Descripation");
-		lblItemDescripation.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblItemDescripation.setBounds(10, 141, 142, 26);
-		panel_1.add(lblItemDescripation);
-		
-		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(138, 118, 442, 74);
-		panel_1.add(scrollPane_1);
-		
-		txt_desc = new JTextArea();
-		scrollPane_1.setViewportView(txt_desc);
-		txt_desc.setRows(3);
-		txt_desc.setLineWrap(true);
-		
-		JLabel lblItemNumber = new JLabel("Item Number");
-		lblItemNumber.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblItemNumber.setBounds(612, 11, 128, 26);
-		panel_1.add(lblItemNumber);
-		
-		lbl_itemno = new JLabel("");
-		lbl_itemno.setFont(new Font("Arial", Font.BOLD, 16));
-		lbl_itemno.setBounds(612, 33, 96, 37);
-		panel_1.add(lbl_itemno);
-		
-		lbl_main_c = new JLabel("");
-		lbl_main_c.setBounds(138, 11, 142, 22);
-		panel_1.add(lbl_main_c);
-		
-		lbl_sub_cate = new JLabel("");
-		lbl_sub_cate.setBounds(438, 11, 142, 22);
-		panel_1.add(lbl_sub_cate);
-		
-		JLabel lblChange = new JLabel("change");
-		lblChange.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblChange.setBounds(66, 41, 62, 25);
-		panel_1.add(lblChange);
-		
-		JButton btnFindAgain_1 = new JButton("Find Again");
-		btnFindAgain_1.setBounds(10, hei-140, 118, 87);
-		panel_1.add(btnFindAgain_1);
-		
-		JLabel label = new JLabel("Company Name");
-		label.setFont(new Font("Arial", Font.BOLD, 14));
-		label.setBounds(10, 225, 142, 21);
-		panel_1.add(label);
-		
-		lbl_company = new JLabel("");
-		lbl_company.setFont(new Font("Arial", Font.BOLD, 16));
-		lbl_company.setBounds(162, 221, 280, 30);
-		panel_1.add(lbl_company);
-		
-		JLabel label_2 = new JLabel("Change Company");
-		label_2.setFont(new Font("Arial", Font.BOLD, 14));
-		label_2.setBounds(10, 267, 142, 21);
-		panel_1.add(label_2);
-		
-		cmb_comp = new JComboBox();
-		cmb_comp.setFont(new Font("Arial", Font.BOLD, 14));
-		cmb_comp.setBounds(162, 268, 280, 30);
-		panel_1.add(cmb_comp);
-		
-		JButton button = new JButton("Change ");
-		button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				updatecompany();
-			}
-		});
-		button.setBounds(458, 267, 89, 30);
-		panel_1.add(button);
-		
-		JSeparator separator_1 = new JSeparator();
-		separator_1.setBounds(10, 212, 700, 2);
-		panel_1.add(separator_1);
-		
-		JPanel panel_3 = new JPanel();
-		tabbedPane.addTab("Stock & Updates", null, panel_3, null);
-		panel_3.setLayout(null);
-		
-		JLabel lblItemStock = new JLabel("Item Stock");
-		lblItemStock.setFont(new Font("Arial", Font.PLAIN, 14));
-		lblItemStock.setBounds(10, 11, 81, 28);
-		panel_3.add(lblItemStock);
-		
-		JLabel lblLastRecieveQuantity = new JLabel("Last Recieve Quantity");
-		lblLastRecieveQuantity.setFont(new Font("Arial", Font.PLAIN, 14));
-		lblLastRecieveQuantity.setBounds(10, 50, 151, 28);
-		panel_3.add(lblLastRecieveQuantity);
-		
-		JLabel lblLastRecieveDate = new JLabel("Last Recieve Date");
-		lblLastRecieveDate.setFont(new Font("Arial", Font.PLAIN, 14));
-		lblLastRecieveDate.setBounds(10, 89, 151, 28);
-		panel_3.add(lblLastRecieveDate);
-		
-		JLabel lblLastRecieveBy = new JLabel("Last Recieve By");
-		lblLastRecieveBy.setFont(new Font("Arial", Font.PLAIN, 14));
-		lblLastRecieveBy.setBounds(10, 128, 151, 28);
-		panel_3.add(lblLastRecieveBy);
-		
-		lbl_last_r_quan = new JLabel("");
-		lbl_last_r_quan.setFont(new Font("Arial", Font.PLAIN, 14));
-		lbl_last_r_quan.setBounds(176, 50, 163, 28);
-		panel_3.add(lbl_last_r_quan);
-		
-		lbl_last_r_date = new JLabel("");
-		lbl_last_r_date.setFont(new Font("Arial", Font.PLAIN, 14));
-		lbl_last_r_date.setBounds(176, 89, 163, 28);
-		panel_3.add(lbl_last_r_date);
-		
-		lbl_last_r_by = new JLabel("");
-		lbl_last_r_by.setFont(new Font("Arial", Font.PLAIN, 14));
-		lbl_last_r_by.setBounds(176, 128, 163, 28);
-		panel_3.add(lbl_last_r_by);
-		
-		lbl_current_stock = new JLabel("");
-		lbl_current_stock.setFont(new Font("Arial", Font.PLAIN, 14));
-		lbl_current_stock.setBounds(176, 11, 163, 28);
-		panel_3.add(lbl_current_stock);
-		
-		JSeparator separator = new JSeparator();
-		separator.setOrientation(SwingConstants.VERTICAL);
-		separator.setBounds(359, 11, 2, 402);
-		panel_3.add(separator);
-		
-		JLabel lblAddStock = new JLabel("Update Stock");
-		lblAddStock.setFont(new Font("Arial", Font.PLAIN, 14));
-		lblAddStock.setBounds(371, 11, 117, 28);
-		panel_3.add(lblAddStock);
-		
-		txtupdatestock = new JTextField();
-		txtupdatestock.setBounds(498, 12, 140, 28);
-		panel_3.add(txtupdatestock);
-		txtupdatestock.setColumns(10);
-		
-		JButton btnUpdate_1 = new JButton("Update");
-		btnUpdate_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				updatestock();
-			}
-		});
-		btnUpdate_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnUpdate_1.setBounds(369, 89, 96, 55);
-		panel_3.add(btnUpdate_1);
-		
-		JButton btnSetZero = new JButton("Set Zero");
-		btnSetZero.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnSetZero.setBounds(498, 89, 96, 55);
-		panel_3.add(btnSetZero);
-		
-		JLabel label_1 = new JLabel("Cost Price");
-		label_1.setFont(new Font("Arial", Font.BOLD, 14));
-		label_1.setBounds(10, 242, 111, 27);
-		panel_3.add(label_1);
-		
-		JLabel label_3 = new JLabel("Retail Price");
-		label_3.setFont(new Font("Arial", Font.BOLD, 14));
-		label_3.setBounds(10, 280, 111, 27);
-		panel_3.add(label_3);
-		
-		txt_retail_price = new JTextField();
-		txt_retail_price.setFont(new Font("Arial Black", Font.BOLD, 14));
-		txt_retail_price.setColumns(10);
-		txt_retail_price.setBounds(131, 279, 167, 27);
-		panel_3.add(txt_retail_price);
-		
-		txt_cost_price = new JTextField();
-		txt_cost_price.setFont(new Font("Arial Black", Font.BOLD, 14));
-		txt_cost_price.setColumns(10);
-		txt_cost_price.setBounds(131, 241, 167, 27);
-		panel_3.add(txt_cost_price);
-		
-		textField_2 = new JTextField();
-		textField_2.setFont(new Font("Arial Black", Font.BOLD, 14));
-		textField_2.setColumns(10);
-		textField_2.setBounds(131, 317, 167, 27);
-		panel_3.add(textField_2);
-		
-		JLabel label_4 = new JLabel("Profit");
-		label_4.setFont(new Font("Arial", Font.BOLD, 14));
-		label_4.setBounds(10, 318, 111, 27);
-		panel_3.add(label_4);
-		
-		JButton button_1 = new JButton("Update");
-		button_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				updateprice();
-			}
-		});
-		button_1.setFont(new Font("Arial Black", Font.PLAIN, 14));
-		button_1.setBounds(131, 355, 111, 58);
-		panel_3.add(button_1);
-		
-		JLabel label_5 = new JLabel("Taxes");
-		label_5.setFont(new Font("Arial", Font.BOLD, 14));
-		label_5.setBounds(371, 242, 111, 27);
-		panel_3.add(label_5);
-		
-		
-		lbl_tax_name = new JLabel("");
-		lbl_tax_name.setFont(new Font("Arial", Font.BOLD, 14));
-		lbl_tax_name.setBounds(371, 280, 111, 27);
-		panel_3.add(lbl_tax_name);
-		
-		comboBox = new JComboBox();
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"MD tax", "Alcohol Tax", "NO TAX"}));
-		comboBox.setBounds(371, 366, 111, 29);
-		panel_3.add(comboBox);
-		
-		JLabel label_7 = new JLabel("Change Tax Type");
-		label_7.setFont(new Font("Arial", Font.BOLD, 14));
-		label_7.setBounds(371, 328, 159, 27);
-		panel_3.add(label_7);
-		
-		lbl_tax_amount = new JLabel("");
-		lbl_tax_amount.setFont(new Font("Arial", Font.BOLD, 14));
-		lbl_tax_amount.setBounds(522, 280, 111, 27);
-		panel_3.add(lbl_tax_amount);
-		
-		JButton button_2 = new JButton("Apply");
-		button_2.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			updatetax();
-			}
-		});
-		button_2.setFont(new Font("Arial", Font.BOLD, 13));
-		button_2.setBounds(527, 369, 111, 29);
-		panel_3.add(button_2);
-		
-		JSeparator separator_2 = new JSeparator();
-		separator_2.setBounds(10, 195, 700, 2);
-		panel_3.add(separator_2);
-		
-		JPanel panel_5 = new JPanel();
-		tabbedPane.addTab("Product History", null, panel_5, null);
-		panel_5.setLayout(null);
-		
-		JButton btnToday = new JButton("Today");
-		btnToday.setFont(new Font("Arial", Font.BOLD, 14));
-		btnToday.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				tablehistoryfill(1);
-			}
-		});
-		btnToday.setBounds(10, 11, 143, 36);
-		panel_5.add(btnToday);
-		
-		JButton btnAll = new JButton("All");
-		btnAll.setFont(new Font("Arial", Font.BOLD, 14));
-		btnAll.setBounds(163, 11, 143, 36);
-		panel_5.add(btnAll);
-		
-		JButton btnChangeOrder = new JButton("Asce/Des.");
-		btnChangeOrder.setFont(new Font("Arial", Font.BOLD, 14));
-		btnChangeOrder.setBounds(316, 11, 143, 36);
-		panel_5.add(btnChangeOrder);
-		
-		JScrollPane scrollPane_2 = new JScrollPane();
-		scrollPane_2.setBounds(10, 58, screenSize.width-50, 200);
-		panel_5.add(scrollPane_2);
-		
-		table_history = new JTable();
-		table_history.setModel(new DefaultTableModel(
-			new Object[][] {
-			},
-			new String[] {
-				"Invoice ID","Date/Time","Employee","Quantity","Disocount","Sold Price",""
-			}
-		));
-		scrollPane_2.setViewportView(table_history);
-		
-		JPanel Extra = new JPanel();
-		tabbedPane.addTab("Stock Details", null, Extra, null);
-		Extra.setLayout(null);
-		
-		JScrollPane scrollPane_3 = new JScrollPane();
-		scrollPane_3.setBounds(10, 40, wid-40, hei-150);
-		Extra.add(scrollPane_3);
-		
-		table_stock = new JTable();
-		table_stock.setModel(new DefaultTableModel(
-			new Object[][] {
-			},
-			new String[] {
-				"Date of Recieve", "Quantity","Cost Price", "Employee","Vendor"
-			}
-		));
-		scrollPane_3.setViewportView(table_stock);
-		
-		JButton btnNewButton = new JButton("Load");
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-					DefaultTableModel model = (DefaultTableModel)table_stock.getModel();
-					model.setRowCount(0);
-					try {
-						s4=conn.prepareStatement("select item_receive.date_time,item_receive.Quantity,item_receive.cost_price,employee.Emp_name,vendors.Vendor_name "
-								+ "from item_receive,vendors,employee,items "
-								+ "where items.Item_id=item_receive.Item_id and item_receive.Employee_id=employee.Employee_id "
-								+ "and item_receive.vendor_id=vendors.Vendor_id and items.Item_id = "+MainItemNo);
-						r3=s4.executeQuery();						
-						while(r3.next()){
-							model.addRow(new Object[]{r3.getString("date_time"),r3.getString("Quantity"),r3.getString("cost_price"),r3.getString("Emp_name"),r3.getString("Vendor_name")});
-						}
-					} catch (SQLException e3) {
-						e3.printStackTrace();
-					}
-			}
-		});
-		btnNewButton.setBounds(10, 0, 106, 39);
-		Extra.add(btnNewButton);
-		
 		
 		table_list.addMouseListener(new MouseAdapter() {
 			@Override
@@ -609,21 +244,325 @@ public class Product_Receive extends JInternalFrame {
 			}
 		});
 		
-		btnFindAgain_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				((DefaultTableModel) table_list.getModel()).setRowCount(0);
-				((DefaultTableModel) table_history.getModel()).setRowCount(0);
-				((DefaultTableModel) table_list.getModel()).setRowCount(0);
-				txt_itemno.setEnabled(true);
-				txt_itemno.setText("");
-				txt_upc.setText("");
-				txt_name.setText("");
-				txtupdatestock.setText("");
-					tabbedPane.setVisible(false);
-					tabbedPane.setEnabled(false);
-					panel_find.setVisible(true);
-			}
-		});;
+		
+		
+		tabbedPane.setLocation(0, 0);
+		tabbedPane.setSize(wid-20, hei-50);
+		contentPane.add(tabbedPane);
+		tabbedPane.setVisible(true);
+		JPanel panel_1 = new JPanel();
+		tabbedPane.addTab("Name & Category", null, panel_1, null);
+		panel_1.setLayout(null);
+		tabbedPane.setFont(new Font("Arial",20,20));
+		
+		JPanel panel = new JPanel();
+		panel.setBounds((wid-413)-((wid*50)/100), 13, 826, 513);
+		panel_1.add(panel);
+		panel.setLayout(null);
+		
+		JLabel lblName_1 = new JLabel("Main Category");
+		lblName_1.setBounds(63, 21, 145, 41);
+		panel.add(lblName_1);
+		lblName_1.setFont(new Font("Tahoma", Font.BOLD, 15));
+		
+		JLabel lblSubCategory = new JLabel("Sub Category");
+		lblSubCategory.setBounds(63, 86, 145, 42);
+		panel.add(lblSubCategory);
+		lblSubCategory.setFont(new Font("Tahoma", Font.BOLD, 15));
+		
+		JLabel lblItemName = new JLabel("Item Name");
+		lblItemName.setBounds(63, 169, 118, 26);
+		panel.add(lblItemName);
+		lblItemName.setFont(new Font("Tahoma", Font.BOLD, 14));
+		
+		txt_itemname = new JTextField();
+		txt_itemname.setBounds(220, 161, 442, 41);
+		panel.add(txt_itemname);
+		txt_itemname.setEditable(false);
+		txt_itemname.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		txt_itemname.setColumns(10);
+		
+		JLabel lblItemDescripation = new JLabel("Item Descripation");
+		lblItemDescripation.setBounds(66, 263, 142, 26);
+		panel.add(lblItemDescripation);
+		lblItemDescripation.setFont(new Font("Tahoma", Font.BOLD, 14));
+		
+		JScrollPane scrollPane_1 = new JScrollPane();
+		scrollPane_1.setBounds(220, 234, 442, 74);
+		panel.add(scrollPane_1);
+		
+		txt_desc = new JTextArea();
+		txt_desc.setEditable(false);
+		scrollPane_1.setViewportView(txt_desc);
+		txt_desc.setRows(3);
+		txt_desc.setLineWrap(true);
+		
+		JLabel lblItemNumber = new JLabel("Item Number");
+		lblItemNumber.setBounds(507, 21, 198, 41);
+		panel.add(lblItemNumber);
+		lblItemNumber.setHorizontalAlignment(SwingConstants.CENTER);
+		lblItemNumber.setFont(new Font("Tahoma", Font.BOLD, 14));
+		
+		lbl_itemno = new JLabel("");
+		lbl_itemno.setBounds(507, 76, 198, 52);
+		panel.add(lbl_itemno);
+		lbl_itemno.setHorizontalAlignment(SwingConstants.CENTER);
+		lbl_itemno.setFont(new Font("Tahoma", Font.BOLD, 25));
+		
+		lbl_main_c = new JLabel("");
+		lbl_main_c.setBounds(220, 21, 243, 41);
+		panel.add(lbl_main_c);
+		lbl_main_c.setFont(new Font("Tahoma", Font.BOLD, 15));
+		
+		lbl_sub_cate = new JLabel("");
+		lbl_sub_cate.setBounds(220, 86, 243, 41);
+		panel.add(lbl_sub_cate);
+		lbl_sub_cate.setFont(new Font("Tahoma", Font.BOLD, 15));
+		
+		JLabel label = new JLabel("Company Name");
+		label.setBounds(65, 336, 142, 41);
+		panel.add(label);
+		label.setFont(new Font("Arial", Font.BOLD, 14));
+		
+		lbl_company = new JLabel("");
+		lbl_company.setBounds(217, 336, 280, 41);
+		panel.add(lbl_company);
+		lbl_company.setFont(new Font("Arial", Font.BOLD, 16));
+		
+				
+				JButton btnFindAgain_1 = new JButton("Find Again");
+				btnFindAgain_1.setFont(new Font("Tahoma", Font.PLAIN, 20));
+				btnFindAgain_1.setBounds(507, 414, 177, 87);
+				panel.add(btnFindAgain_1);
+				
+				JButton btnClose_1 = new JButton("Close");
+				btnClose_1.setFont(new Font("Tahoma", Font.PLAIN, 20));
+				btnClose_1.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+					dispose();
+					}
+				});
+				btnClose_1.setBounds(696, 414, 118, 86);
+				panel.add(btnClose_1);
+				
+				btnFindAgain_1.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						((DefaultTableModel) table_list.getModel()).setRowCount(0);
+						((DefaultTableModel) table_history.getModel()).setRowCount(0);
+						((DefaultTableModel) table_list.getModel()).setRowCount(0);
+						txt_itemno.setEnabled(true);
+						txt_itemno.setText("");
+						txt_upc.setText("");
+						txt_name.setText("");
+						txtupdatestock.setText("");
+							tabbedPane.setVisible(false);
+							tabbedPane.setEnabled(false);
+							panel_find.setVisible(true);
+					}
+				});
+				
+				JPanel panel_3 = new JPanel();
+				tabbedPane.addTab("Stock & Updates", null, panel_3, null);
+				panel_3.setLayout(null);
+				
+				JPanel panel_2 = new JPanel();
+				panel_2.setBounds((wid-408)-((wid*50)/100), 11, 816, 239);
+				panel_3.add(panel_2);
+				panel_2.setLayout(null);
+				
+				JLabel lblItemStock = new JLabel("Item Stock");
+				lblItemStock.setBounds(53, 13, 180, 28);
+				panel_2.add(lblItemStock);
+				lblItemStock.setFont(new Font("Tahoma", Font.PLAIN, 15));
+				
+				JLabel lblLastRecieveQuantity = new JLabel("Last Recieve Quantity");
+				lblLastRecieveQuantity.setBounds(53, 52, 180, 28);
+				panel_2.add(lblLastRecieveQuantity);
+				lblLastRecieveQuantity.setFont(new Font("Tahoma", Font.PLAIN, 15));
+				
+				JLabel lblLastRecieveDate = new JLabel("Last Recieve Date");
+				lblLastRecieveDate.setBounds(53, 91, 180, 28);
+				panel_2.add(lblLastRecieveDate);
+				lblLastRecieveDate.setFont(new Font("Tahoma", Font.PLAIN, 15));
+				
+				JLabel lblLastRecieveBy = new JLabel("Last Recieve By");
+				lblLastRecieveBy.setBounds(53, 130, 180, 28);
+				panel_2.add(lblLastRecieveBy);
+				lblLastRecieveBy.setFont(new Font("Tahoma", Font.PLAIN, 15));
+				
+				lbl_last_r_quan = new JLabel("");
+				lbl_last_r_quan.setBounds(245, 52, 234, 28);
+				panel_2.add(lbl_last_r_quan);
+				lbl_last_r_quan.setFont(new Font("Tahoma", Font.PLAIN, 17));
+				
+				lbl_last_r_date = new JLabel("");
+				lbl_last_r_date.setBounds(245, 91, 234, 28);
+				panel_2.add(lbl_last_r_date);
+				lbl_last_r_date.setFont(new Font("Tahoma", Font.PLAIN, 17));
+				
+				lbl_last_r_by = new JLabel("");
+				lbl_last_r_by.setBounds(245, 130, 234, 28);
+				panel_2.add(lbl_last_r_by);
+				lbl_last_r_by.setFont(new Font("Tahoma", Font.PLAIN, 17));
+				
+				lbl_current_stock = new JLabel("");
+				lbl_current_stock.setBounds(245, 13, 234, 28);
+				panel_2.add(lbl_current_stock);
+				lbl_current_stock.setFont(new Font("Tahoma", Font.PLAIN, 17));
+				
+				JLabel lblAddStock = new JLabel("Update Stock");
+				lblAddStock.setHorizontalAlignment(SwingConstants.CENTER);
+				lblAddStock.setBounds(528, 13, 222, 28);
+				panel_2.add(lblAddStock);
+				lblAddStock.setFont(new Font("Tahoma", Font.PLAIN, 20));
+				
+				txtupdatestock = new JTextField();
+				txtupdatestock.setFont(new Font("Tahoma", Font.PLAIN, 20));
+				txtupdatestock.setBounds(528, 54, 222, 47);
+				panel_2.add(txtupdatestock);
+				txtupdatestock.setColumns(10);
+				
+				JButton btnUpdate_1 = new JButton("Update");
+				btnUpdate_1.setBounds(528, 138, 96, 55);
+				panel_2.add(btnUpdate_1);
+				btnUpdate_1.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+						updatestock();
+					}
+				});
+				btnUpdate_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
+				
+				JButton btnSetZero = new JButton("Set Zero");
+				btnSetZero.setBounds(654, 138, 96, 55);
+				panel_2.add(btnSetZero);
+				btnSetZero.setFont(new Font("Tahoma", Font.PLAIN, 14));
+				
+				JPanel panel_4 = new JPanel();
+				panel_4.setBounds((wid-408)-((wid*50)/100), 274, 816, 138);
+				panel_3.add(panel_4);
+				panel_4.setLayout(null);
+				
+				JLabel label_1 = new JLabel("Cost Price");
+				label_1.setBounds(145, 13, 164, 27);
+				panel_4.add(label_1);
+				label_1.setFont(new Font("Tahoma", Font.PLAIN, 17));
+				
+				JLabel label_3 = new JLabel("Retail Price");
+				label_3.setBounds(145, 51, 164, 27);
+				panel_4.add(label_3);
+				label_3.setFont(new Font("Tahoma", Font.PLAIN, 17));
+				
+				txt_retail_price = new JTextField();
+				txt_retail_price.setBounds(321, 51, 238, 27);
+				panel_4.add(txt_retail_price);
+				txt_retail_price.setFont(new Font("Tahoma", Font.PLAIN, 17));
+				txt_retail_price.setColumns(10);
+				
+				txt_cost_price = new JTextField();
+				txt_cost_price.setBounds(321, 13, 238, 27);
+				panel_4.add(txt_cost_price);
+				txt_cost_price.setFont(new Font("Tahoma", Font.PLAIN, 17));
+				txt_cost_price.setColumns(10);
+				
+				textField_2 = new JTextField();
+				textField_2.setBounds(321, 89, 238, 27);
+				panel_4.add(textField_2);
+				textField_2.setFont(new Font("Tahoma", Font.PLAIN, 17));
+				textField_2.setColumns(10);
+				
+				JLabel label_4 = new JLabel("Profit");
+				label_4.setBounds(145, 89, 164, 27);
+				panel_4.add(label_4);
+				label_4.setFont(new Font("Tahoma", Font.PLAIN, 17));
+				
+				JButton button_1 = new JButton("Update");
+				button_1.setBounds(571, 13, 111, 103);
+				panel_4.add(button_1);
+				button_1.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						updateprice();
+					}
+				});
+				button_1.setFont(new Font("Arial Black", Font.PLAIN, 14));
+				
+				JPanel panel_5 = new JPanel();
+				tabbedPane.addTab("Product History", null, panel_5, null);
+				panel_5.setLayout(null);
+				
+				JButton btnToday = new JButton("Today");
+				btnToday.setFont(new Font("Arial", Font.BOLD, 14));
+				btnToday.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						tablehistoryfill(1);
+					}
+				});
+				btnToday.setBounds(10, 11, 143, 36);
+				panel_5.add(btnToday);
+				
+				JButton btnAll = new JButton("All");
+				btnAll.setFont(new Font("Arial", Font.BOLD, 14));
+				btnAll.setBounds(163, 11, 143, 36);
+				panel_5.add(btnAll);
+				
+				JButton btnChangeOrder = new JButton("Asce/Des.");
+				btnChangeOrder.setFont(new Font("Arial", Font.BOLD, 14));
+				btnChangeOrder.setBounds(316, 11, 143, 36);
+				panel_5.add(btnChangeOrder);
+				
+				JScrollPane scrollPane_2 = new JScrollPane();
+				scrollPane_2.setBounds(10, 58, screenSize.width-50, 200);
+				panel_5.add(scrollPane_2);
+				
+				table_history = new JTable();
+				table_history.setModel(new DefaultTableModel(
+					new Object[][] {
+					},
+					new String[] {
+						"Invoice ID","Date/Time","Employee","Quantity","Disocount","Sold Price",""
+					}
+				));
+				scrollPane_2.setViewportView(table_history);
+				
+				JPanel Extra = new JPanel();
+				tabbedPane.addTab("Stock Details", null, Extra, null);
+				Extra.setLayout(null);
+				
+				JScrollPane scrollPane_3 = new JScrollPane();
+				scrollPane_3.setBounds(10, 40, wid-40, hei-150);
+				Extra.add(scrollPane_3);
+				
+				table_stock = new JTable();
+				table_stock.setModel(new DefaultTableModel(
+					new Object[][] {
+					},
+					new String[] {
+						"Date of Recieve", "Quantity","Cost Price", "Employee","Vendor"
+					}
+				));
+				scrollPane_3.setViewportView(table_stock);
+				
+				JButton btnNewButton = new JButton("Load");
+				btnNewButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						
+							DefaultTableModel model = (DefaultTableModel)table_stock.getModel();
+							model.setRowCount(0);
+							try {
+								s4=conn.prepareStatement("select item_receive.date_time,item_receive.Quantity,item_receive.cost_price,employee.Emp_name,vendors.Vendor_name "
+										+ "from item_receive,vendors,employee,items "
+										+ "where items.Item_id=item_receive.Item_id and item_receive.Employee_id=employee.Employee_id "
+										+ "and item_receive.vendor_id=vendors.Vendor_id and items.Item_id = "+MainItemNo);
+								r3=s4.executeQuery();						
+								while(r3.next()){
+									model.addRow(new Object[]{r3.getString("date_time"),r3.getString("Quantity"),r3.getString("cost_price"),r3.getString("Emp_name"),r3.getString("Vendor_name")});
+								}
+							} catch (SQLException e3) {
+								e3.printStackTrace();
+							}
+					}
+				});
+				btnNewButton.setBounds(10, 0, 106, 39);
+				Extra.add(btnNewButton);;
 	}
 	
 	
@@ -640,6 +579,11 @@ public class Product_Receive extends JInternalFrame {
 				String sql = "update item_stock set `Item_stock`="+Integer.valueOf(txtupdatestock.getText())+" where `Item_id` ="+MainItemNo;
 				st1.executeUpdate(sql);
 				JOptionPane.showMessageDialog(null, "Stock Changed", "ALERT", 1);
+				lbl_last_r_quan.setText(txtupdatestock.getText());
+				int curr=Integer.valueOf(lbl_current_stock.getText()).intValue();
+				curr=curr+Integer.valueOf(txtupdatestock.getText());
+				lbl_current_stock.setText(String.valueOf(curr));
+				
 			}
 				} catch (SQLException e1) {
 						e1.printStackTrace();
@@ -659,33 +603,6 @@ public class Product_Receive extends JInternalFrame {
 				st1.executeUpdate(sql);
 				JOptionPane.showMessageDialog(null, "Priced Changed", "ALERT", 1);
 			}
-				} catch (SQLException e1) {
-						e1.printStackTrace();
-				}
-	}
-
-	protected void updatecompany() {
-		try {
-			int venid=getidfromcmb(String.valueOf(cmb_comp.getSelectedItem()), 3);
-			st1 = conn.createStatement();
-			 String sql = "UPDATE items set `Item_vendor_id` = "+venid+" where `Item_id` = "+MainItemNo;
-             st1.executeUpdate(sql);
-             JOptionPane.showMessageDialog(null, "Database Updated", "ALERT", 1);
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-	}
-	
-	protected void updatetax() {
-		try {
-				int idn=getidfromcmb(String.valueOf(comboBox.getSelectedItem()), 4);
-				
-				st1 = conn.createStatement();
-				String sql = "update items set Tax_id="+idn+" where Item_id ="+MainItemNo;
-				st1.executeUpdate(sql);
-				JOptionPane.showMessageDialog(null, "Tax Changed", "ALERT", 1);
-			
 				} catch (SQLException e1) {
 						e1.printStackTrace();
 				}
@@ -718,19 +635,6 @@ public class Product_Receive extends JInternalFrame {
 			e.printStackTrace();
 		}						
 		return no;
-	}
-	
-private void updatename() {
-	try {
-		int cateid=getidfromcmb(String.valueOf(cmb_cate.getSelectedItem()), 1);
-		st1 = conn.createStatement();
-		 String sql = "UPDATE `items` SET `sub_category_id`="+cateid+",`Item_Name` = '"+txt_itemname.getText()+"',`Item_desc` ='"+txt_desc.getText()+"' where `Item_id` = "+MainItemNo;
-         st1.executeUpdate(sql);
-         JOptionPane.showMessageDialog(null, "Category Changed", "ALERT", 1);
-	} catch (SQLException e1) {
-		// TODO Auto-generated catch block
-		e1.printStackTrace();
-	}
 	}
 
 	protected void bindtablename() {
@@ -777,34 +681,6 @@ protected void tablehistoryfill(int i) {
 		
 	}
 	
-	void bindcategory(String query,int device)
-	{
-		try {	
-			ArrayList<String> groupNames = new ArrayList<String>(); 
-			PreparedStatement stm = conn.prepareStatement(query); 
-			ResultSet rs = stm.executeQuery(query); 
-			rs.next();
-			while (rs.next()) { 
-			    String groupName = rs.getString(1); 
-			    groupNames.add(groupName);			}
-			rs.close();
-			DefaultComboBoxModel model = new DefaultComboBoxModel(groupNames.toArray());
-			if(device==1)
-			{
-				cmb_main_cat.setModel(model);
-			}
-			else if(device==2)
-			{
-				cmb_cate.setModel(model);
-			}
-			else 
-			{
-				cmb_comp.setModel(model);
-			}
-		} catch (SQLException e3) {
-			e3.printStackTrace();
-		}
-	}
 	
 	
 	
@@ -842,12 +718,7 @@ protected void tablehistoryfill(int i) {
 	
 	void filldata(int itemno)
 	{
-		String query = "SELECT Category_name FROM `category`"; 
-		String query2 = "SELECT sub_category_name FROM `sub_category`"; 
-		String query3 = "SELECT `Vendor_name` FROM `vendors`";
-		bindcategory(query,1);
-		bindcategory(query2,2);
-		bindcategory(query3,3);
+		
 		PreparedStatement n1;
 		ResultSet n2;
 	    //String query = "SELECT `Item_Name` FROM `items` WHERE `Item_number` =79";
@@ -879,8 +750,6 @@ protected void tablehistoryfill(int i) {
 				 txt_cost_price.setText(r3.getString("Item_cost_price"));
 				 txt_retail_price.setText(r3.getString("Item_retail_price"));
 				 lbl_company.setText(r3.getString("Vendor_name"));
-				 lbl_tax_name.setText(r3.getString("Type"));
-				 lbl_tax_amount.setText(r3.getString("Per"));
 			}
 		} catch (SQLException e3) {
 			e3.printStackTrace();
