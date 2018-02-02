@@ -23,7 +23,7 @@ public class Cashier extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 	static int a; 
-	static int b;
+	static double b=11.21;
 	static int mm;
 	private JTextField textField;
 	private JButton btn2;
@@ -186,9 +186,11 @@ public class Cashier extends JDialog {
 		Dyn1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				SecondWindow sw = new SecondWindow();
-				Double w = b-Integer.valueOf(Dyn1.getText());
-				sw.invoicedone(w,method,b);
+				Double w = Double.valueOf(Dyn1.getText());
+				JOptionPane.showMessageDialog(null, "btn = "+w);
+				sw.invoiceStepOne(w,method,b);
 				dispose();
+				
 			}
 		});
 		Dyn1.setBounds(10, 110, 62, 48);
@@ -198,8 +200,9 @@ public class Cashier extends JDialog {
 		dyn2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				SecondWindow sw = new SecondWindow();
-				Double w = b-Integer.valueOf(dyn2.getText());
-				sw.invoicedone(w,method,b);
+				Double w = Double.valueOf(dyn2.getText());
+				JOptionPane.showMessageDialog(null, "btn = "+w);
+				sw.invoiceStepOne(w,method,b);
 				dispose();
 			}
 		});
@@ -210,8 +213,8 @@ public class Cashier extends JDialog {
 		dyn3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				SecondWindow sw = new SecondWindow();
-				Double w = b-Integer.valueOf(dyn3.getText());
-				sw.invoicedone(w,method,b);
+				Double w = Double.valueOf(dyn3.getText());
+				sw.invoiceStepOne(w,method,b);
 				dispose();
 			}
 		});
@@ -222,8 +225,8 @@ public class Cashier extends JDialog {
 		dyn4.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				SecondWindow sw = new SecondWindow();
-				Double w = b-Integer.valueOf(dyn4.getText());
-				sw.invoicedone(w,method,b);
+				Double w = Double.valueOf(dyn4.getText());
+				sw.invoiceStepOne(w,method,b);
 				dispose();
 			}
 		});
@@ -234,8 +237,8 @@ public class Cashier extends JDialog {
 		dyn5.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				SecondWindow sw = new SecondWindow();
-				Double w = b-Integer.valueOf(dyn5.getText());
-				sw.invoicedone(w,method,b);
+				Double w = Double.valueOf(dyn5.getText());
+				sw.invoiceStepOne(w,method,b);
 				dispose();
 			}
 		});
@@ -259,10 +262,10 @@ public class Cashier extends JDialog {
 				Double w = b;
 				if(textField.getText().equals(""))
 				{
-					sw.invoicedone(b,method,b);
+					sw.invoiceStepOne(b,method,b);
 					dispose();
 				}else{
-					sw.invoicedone(Double.valueOf(textField.getText()),method,b);
+					sw.invoiceStepOne(Double.valueOf(textField.getText()),method,b);
 					dispose();
 				}
 			}

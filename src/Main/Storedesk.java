@@ -99,7 +99,7 @@ public class Storedesk extends JFrame {
 		JPanel panel = new JPanel();
 		panel.setBorder(null);
 		panel.setBackground(new Color(175, 238, 238));
-		panel.setBounds((wid-(wid*50)/100)-298, 266, 596, 429);
+		panel.setBounds((wid-(wid*50)/100)-298, (hei-((hei*75)/100)), 596, 429);
 		login_panel.add(panel);
 		panel.setLayout(null);
 		
