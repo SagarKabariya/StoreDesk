@@ -725,7 +725,7 @@ public class Product_Modify extends JFrame {
 				{
 					btnAdd.setText("Update");
 					Matrix_panel.setVisible(true);
-					String query = "select item_size_sign from item_size";
+					String query = "select item_packing_type from item_packing";
 					bindcategory(query,4);
 					cmbsize.setSelectedItem(table_matrix.getValueAt(table_matrix.getSelectedRow(),3));
 					txtdivide.setText(table_matrix.getValueAt(table_matrix.getSelectedRow(), 4).toString());
@@ -742,7 +742,7 @@ public class Product_Modify extends JFrame {
 				txtrpriceMat.setText("");
 				btnAdd.setText("Add");
 				Matrix_panel.setVisible(true);
-				String query = "select item_size_sign from item_size";
+				String query = "select item_packing_type from item_packing";
 				bindcategory(query,4);
 			}
 		});
@@ -793,7 +793,7 @@ public class Product_Modify extends JFrame {
 					
 					//i==1 means add items
 					s2=conn.prepareStatement("INSERT INTO `item_quantity_matrix`(`Size_id`,`item_id`, `Devide_By`, `Price`) "
-							+ "VALUES ((select Item_size_id from item_size where Item_size_sign like '"+size+"'),"+MainItemNo+","+txtdivide.getText()+","+txtrpriceMat.getText()+")");
+							+ "VALUES ((select item_packing_id from item_packing where Item_packing_type like '"+size+"'),"+MainItemNo+","+txtdivide.getText()+","+txtrpriceMat.getText()+")");
 					//System.out.println(s2);
 					s2.execute();
 					Matrix_panel.setVisible(false);
@@ -805,7 +805,7 @@ public class Product_Modify extends JFrame {
 					int matrix_id=(Integer) table_matrix.getValueAt(rowvalue, 0);
 					
 					st1 = conn.createStatement();
-					String sql = "UPDATE item_quantity_matrix set `Size_id`=(select Item_size_id from item_size where Item_size_sign like '"+cmbsize.getSelectedItem()+"'), "
+					String sql = "UPDATE item_quantity_matrix set `Size_id`=(select item_packing_id from item_packing where Item_packing_type like '"+cmbsize.getSelectedItem()+"'), "
 							+ "`Devide_By`="+txtdivide.getText()+", `Price`="+txtrpriceMat.getText()+" WHERE item_quantity_matrix.Matrix_id = "+matrix_id;
 					//System.out.println(st1);
 					st1.executeUpdate(sql);
@@ -1129,8 +1129,8 @@ private void updatename() {
 		}
 	}
 	private void FillMatrix(int itnumber) {
-		String query = "SELECT item_quantity_matrix.Matrix_id,item_quantity_matrix.item_id,item_quantity_matrix.size_id,item_size.Item_size_sign,item_quantity_matrix.Devide_By, item_quantity_matrix.Price from item_size,item_quantity_matrix "
-							+ "where item_size.Item_size_id=item_quantity_matrix.Size_id AND item_quantity_matrix.item_id="+MainItemNo; 
+		String query = "SELECT item_quantity_matrix.Matrix_id,item_quantity_matrix.item_id,item_quantity_matrix.size_id,item_packing.item_packing_type,item_quantity_matrix.Devide_By, item_quantity_matrix.Price from Item_packing,item_quantity_matrix "
+							+ "where item_packing.item_packing_id=item_quantity_matrix.Size_id AND item_quantity_matrix.item_id="+MainItemNo; 
 		PreparedStatement n1;
 		ResultSet n2;
 		DefaultTableModel model = (DefaultTableModel)table_matrix.getModel();

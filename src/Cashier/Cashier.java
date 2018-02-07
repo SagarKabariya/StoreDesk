@@ -18,6 +18,8 @@ import org.eclipse.wb.swing.FocusTraversalOnArray;
 import Register.SecondWindow;
 
 import java.awt.Component;
+import javax.swing.JSeparator;
+import java.awt.Color;
 
 public class Cashier extends JDialog {
 
@@ -49,26 +51,29 @@ public class Cashier extends JDialog {
 		setAlwaysOnTop(true);
 		setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
 		setTitle("Cash Changer");
-		setBounds(100, 100, 357, 438);
+		setBounds(100, 100, 652, 657);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 		
 		JPanel panel = new JPanel();
-		panel.setBounds(0, 0, 340, 399);
+		panel.setBounds(0, 0, 633, 597);
 		contentPanel.add(panel);
 		panel.setLayout(null);
 		textField = new JTextField();
-		textField.setBounds(10, 79, 320, 31);
+		textField.setFont(new Font("Tahoma", Font.BOLD, 50));
+		textField.setBounds(10, 47, 612, 63);
 		panel.add(textField);
 		textField.setColumns(10);
 		JButton btnCancel = new JButton("cancel");
-		btnCancel.setBounds(256, 338, 74, 55);
+		btnCancel.setFont(new Font("Tahoma", Font.BOLD, 30));
+		btnCancel.setBounds(489, 414, 133, 176);
 		panel.add(btnCancel);
 		
 		JButton btnOk = new JButton("OK");
-		btnOk.setBounds(10, 338, 74, 55);
+		btnOk.setFont(new Font("Tahoma", Font.BOLD, 30));
+		btnOk.setBounds(489, 219, 133, 179);
 		panel.add(btnOk);
 		
 		JLabel lblTotalItems = new JLabel("Total Items");
@@ -78,7 +83,7 @@ public class Cashier extends JDialog {
 		
 		JLabel lblTotalAmount = new JLabel("Total Amount");
 		lblTotalAmount.setFont(new Font("Arial Black", Font.PLAIN, 14));
-		lblTotalAmount.setBounds(10, 45, 133, 23);
+		lblTotalAmount.setBounds(342, 11, 133, 23);
 		panel.add(lblTotalAmount);
 		
 		JLabel lblQ = new JLabel("");
@@ -86,103 +91,114 @@ public class Cashier extends JDialog {
 		panel.add(lblQ);
 		
 		JLabel lblM = new JLabel("");
-		lblM.setBounds(176, 45, 114, 23);
+		lblM.setBounds(508, 11, 114, 23);
 		panel.add(lblM);
 		
 		lblQ.setText(String.valueOf(a));
 		lblM.setText(String.valueOf(b));
 		
 		JButton btn1 = new JButton("1");
+		btn1.setFont(new Font("Tahoma", Font.BOLD, 30));
 		btn1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				addno("1");
 			}
 		});
-		btn1.setBounds(76, 164, 56, 48);
+		btn1.setBounds(10, 219, 142, 83);
 		panel.add(btn1);
 		
 		btn2 = new JButton("2");
+		btn2.setFont(new Font("Tahoma", Font.BOLD, 30));
 		btn2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				addno("2");
 			}
 		});
-		btn2.setBounds(142, 164, 56, 48);
+		btn2.setBounds(164, 219, 149, 83);
 		panel.add(btn2);
 		
 		JButton btn3 = new JButton("3");
+		btn3.setFont(new Font("Tahoma", Font.BOLD, 30));
 		btn3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				addno("3");
 			}
 		});
-		btn3.setBounds(208, 164, 56, 48);
+		btn3.setBounds(325, 219, 152, 79);
 		panel.add(btn3);
 		
 		JButton btn4 = new JButton("4");
+		btn4.setFont(new Font("Tahoma", Font.BOLD, 30));
 		btn4.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				addno("4");
 			}
 		});
-		btn4.setBounds(76, 223, 56, 48);
+		btn4.setBounds(10, 315, 142, 83);
 		panel.add(btn4);
 		
 		JButton btn5 = new JButton("5");
+		btn5.setFont(new Font("Tahoma", Font.BOLD, 30));
 		btn5.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				addno("5");
 			}
 		});
-		btn5.setBounds(142, 223, 56, 48);
+		btn5.setBounds(164, 315, 149, 83);
 		panel.add(btn5);
 		
 		JButton btn6 = new JButton("6");
+		btn6.setFont(new Font("Tahoma", Font.BOLD, 30));
 		btn6.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				addno("6");
 			}
 		});
-		btn6.setBounds(208, 223, 56, 48);
+		btn6.setBounds(324, 315, 153, 83);
 		panel.add(btn6);
 		
 		JButton btn7 = new JButton("7");
+		btn7.setFont(new Font("Tahoma", Font.BOLD, 30));
 		btn7.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				addno("7");
 			}
 		});
-		btn7.setBounds(76, 282, 56, 48);
+		btn7.setBounds(10, 411, 142, 83);
 		panel.add(btn7);
 		
 		JButton btn8 = new JButton("8");
+		btn8.setFont(new Font("Tahoma", Font.BOLD, 30));
 		btn8.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				addno("8");
 			}
 		});
-		btn8.setBounds(142, 282, 56, 48);
+		btn8.setBounds(164, 414, 149, 80);
 		panel.add(btn8);
 		
 		JButton btn9 = new JButton("9");
+		btn9.setFont(new Font("Tahoma", Font.BOLD, 30));
 		btn9.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				addno("9");
 			}
 		});
-		btn9.setBounds(208, 282, 56, 48);
+		btn9.setBounds(324, 414, 153, 80);
 		panel.add(btn9);
 		
 		JButton btn0 = new JButton("0");
+		btn0.setFont(new Font("Tahoma", Font.BOLD, 30));
 		btn0.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				addno("0");
 			}
 		});
-		btn0.setBounds(110, 341, 56, 48);
+		btn0.setBounds(164, 507, 149, 83);
 		panel.add(btn0);
 		
 		JButton Dyn1 = new JButton("");
+		Dyn1.setFont(new Font("Tahoma", Font.BOLD, 25));
 		Dyn1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				SecondWindow sw = new SecondWindow();
@@ -190,13 +206,13 @@ public class Cashier extends JDialog {
 				JOptionPane.showMessageDialog(null, "btn = "+w);
 				sw.invoiceStepOne(w,method,b);
 				dispose();
-				
 			}
 		});
-		Dyn1.setBounds(10, 110, 62, 48);
+		Dyn1.setBounds(20, 123, 115, 83);
 		panel.add(Dyn1);
 		
 		JButton dyn2 = new JButton("");
+		dyn2.setFont(new Font("Tahoma", Font.BOLD, 25));
 		dyn2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				SecondWindow sw = new SecondWindow();
@@ -206,10 +222,11 @@ public class Cashier extends JDialog {
 				dispose();
 			}
 		});
-		dyn2.setBounds(76, 110, 56, 48);
+		dyn2.setBounds(139, 123, 115, 83);
 		panel.add(dyn2);
 		
 		JButton dyn3 = new JButton("");
+		dyn3.setFont(new Font("Tahoma", Font.BOLD, 25));
 		dyn3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				SecondWindow sw = new SecondWindow();
@@ -218,10 +235,11 @@ public class Cashier extends JDialog {
 				dispose();
 			}
 		});
-		dyn3.setBounds(142, 110, 56, 48);
+		dyn3.setBounds(259, 123, 115, 83);
 		panel.add(dyn3);
 		
 		JButton dyn4 = new JButton("");
+		dyn4.setFont(new Font("Tahoma", Font.BOLD, 25));
 		dyn4.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				SecondWindow sw = new SecondWindow();
@@ -230,10 +248,11 @@ public class Cashier extends JDialog {
 				dispose();
 			}
 		});
-		dyn4.setBounds(208, 110, 56, 48);
+		dyn4.setBounds(379, 123, 115, 83);
 		panel.add(dyn4);
 		
 		JButton dyn5 = new JButton("");
+		dyn5.setFont(new Font("Tahoma", Font.BOLD, 25));
 		dyn5.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				SecondWindow sw = new SecondWindow();
@@ -242,7 +261,7 @@ public class Cashier extends JDialog {
 				dispose();
 			}
 		});
-		dyn5.setBounds(274, 110, 56, 48);
+		dyn5.setBounds(499, 123, 115, 82);
 		panel.add(dyn5);
 		
 		JButton button = new JButton(".");
@@ -251,8 +270,8 @@ public class Cashier extends JDialog {
 			addno(".");
 			}
 		});
-		button.setFont(new Font("Arial Black", Font.BOLD, 20));
-		button.setBounds(176, 341, 56, 48);
+		button.setFont(new Font("Tahoma", Font.BOLD, 30));
+		button.setBounds(324, 507, 153, 83);
 		panel.add(button);
 		setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{textField}));
 		
@@ -262,9 +281,12 @@ public class Cashier extends JDialog {
 				Double w = b;
 				if(textField.getText().equals(""))
 				{
+					JOptionPane.showMessageDialog(null,"null="+b);
 					sw.invoiceStepOne(b,method,b);
 					dispose();
 				}else{
+					JOptionPane.showMessageDialog(null,"not null="+textField.getText());
+					
 					sw.invoiceStepOne(Double.valueOf(textField.getText()),method,b);
 					dispose();
 				}
@@ -279,6 +301,11 @@ public class Cashier extends JDialog {
 		
 		int st=(int) Math.ceil(b);
 		Dyn1.setText(String.valueOf(st));
+		
+		JSeparator separator = new JSeparator();
+		separator.setForeground(Color.BLACK);
+		separator.setBounds(0, 214, 650, 2);
+		panel.add(separator);
 		for(int i=st;i<=(st+5);i++) {
 			int x=i % 5;
 			if(x == 0) {
@@ -317,6 +344,4 @@ public class Cashier extends JDialog {
 			textField.setText(b);
 		}	
 	}
-
-
 }

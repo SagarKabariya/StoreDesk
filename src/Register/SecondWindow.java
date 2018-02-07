@@ -31,6 +31,7 @@ import javax.swing.JToggleButton;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import org.eclipse.wb.swing.FocusTraversalOnArray;
@@ -91,7 +92,7 @@ import javax.swing.border.TitledBorder;
 
 public class SecondWindow extends JFrame implements KeyListener{
 	DecimalFormat df = new DecimalFormat("#.###"); 
-	public static double remaining_change,entered_amount,cash_recieve_main=0,card_recieve_main=0,other_recieve_main=0;
+	public static double remaining_change,entered_amount,cash_recieve_main=0,card_recieve_main=0,other_recieve_main=0,remain_change_main;
 	public static int option_payment;
 	public int voidcounter=0,emp_id, numberfromfind;
 	public double final_total_amount;
@@ -115,21 +116,22 @@ public class SecondWindow extends JFrame implements KeyListener{
 	String[] receipt_data= new String[20];
 	int[] taxidlist =new int[100];	
 	int[] Itemlist =new int[100];
+	boolean igotfocus=false;
 	
 	
 	JButton Btnlogin;
-	private JPanel contentPane,panel_history,panel_remain;
+	private JPanel contentPane,panel_history,panel_remain,panel_name,panel_card;
 	JTextField Itemno = new JTextField();
 	JTextField Price = new JTextField();
 	Object[] message = {
 		    "Item NO:", Itemno,
 		    "Price:", Price
 		};
-	public JLabel lbl_last_tot_itm, lbl_last_tot_amt, lbl_change, lbl_last_BNO,lbl_total_qua ;
+	public JLabel lbl_last_tot_itm, lbl_last_tot_amt, lbl_change, lbl_last_BNO ;
 	JLabel lbl_final_remain, lbl_final_card_pay, lbl_final_cash_pay,lbl_final_total_qua, lbl_final_tax_tot, lbl_final_sub_tot,lbl_final_total;
 	
 	private JTable table_register,table_void, table_2;
-	private JTextField item_no,textField_focus, textField_focus_2;
+	private JTextField item_no,textField_focus;
 	Calendar cal = Calendar.getInstance();
 	DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	Date today = new Date();
@@ -199,6 +201,8 @@ public class SecondWindow extends JFrame implements KeyListener{
 		scrollPane_regi.setBounds((wid*11)/100, 163, (wid*88)/100, (hei*55)/100);
 		panel_register.add(scrollPane_regi);
 		
+		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+		centerRenderer.setHorizontalAlignment( JLabel.CENTER );
 		
 		table_register = new JTable();
 		scrollPane_regi.setViewportView(table_register);
@@ -219,6 +223,17 @@ public class SecondWindow extends JFrame implements KeyListener{
 		table_register.setBackground(new Color(102, 204, 153));
 		table_register.setRowHeight(40);
 		table_register.setBorder(new MatteBorder(5, 1, 1, 0, (Color) new Color(0, 0, 0)));
+		table_register.setDefaultRenderer(String.class, centerRenderer);
+		
+		
+		DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
+		dtcr.setHorizontalAlignment(JLabel.CENTER);
+		table_register.getColumnModel().getColumn(0).setCellRenderer(dtcr);
+		table_register.getColumnModel().getColumn(1).setCellRenderer(dtcr);
+		table_register.getColumnModel().getColumn(2).setCellRenderer(dtcr);
+		table_register.getColumnModel().getColumn(3).setCellRenderer(dtcr);
+		table_register.getColumnModel().getColumn(4).setCellRenderer(dtcr);
+		
 		
 		table_register.addMouseListener(new MouseAdapter() {
 			@Override
@@ -228,9 +243,7 @@ public class SecondWindow extends JFrame implements KeyListener{
 				Boolean rropt=false;
 				Double no=0.0;
 				DefaultTableModel model = (DefaultTableModel)table_register.getModel();
-				
 				String[] buttons = { "Edit Quantity", "Edit Discount","Remove Item", "OK","Cancel"}; 
-				
 				int returnValue = JOptionPane.showOptionDialog(null, "Special Change Model", "Select Properly",
 				        JOptionPane.WARNING_MESSAGE, 0, null, buttons,buttons[0]);
 				if(returnValue==0)
@@ -240,7 +253,9 @@ public class SecondWindow extends JFrame implements KeyListener{
 					Double q=Double.parseDouble(String.valueOf(model.getValueAt(row, 2)));
 					q=q*Double.parseDouble(qu);
 					model.setValueAt(df.format(q), row, 4);
-					lbl_total_qua.setText(String.valueOf(Integer.valueOf(getquan())));
+					lbl_final_total_qua.setText(String.valueOf(Integer.valueOf(getquan())));
+					lbl_final_total_qua.setText(String.valueOf(Integer.valueOf(getquan())));
+					
 				}
 				else if(returnValue==2)
 				{
@@ -259,7 +274,7 @@ public class SecondWindow extends JFrame implements KeyListener{
 				     model.removeRow(row);
 				     rropt=true;
 				     listcounter--;
-				     lbl_total_qua.setText(String.valueOf(Integer.valueOf(getquan())));
+				     lbl_final_total_qua.setText(String.valueOf(Integer.valueOf(getquan())));
 				    } 
 				}
 				else if(returnValue==1)
@@ -370,6 +385,7 @@ public class SecondWindow extends JFrame implements KeyListener{
 					invoiceStepTwo();
 					invoicemake();
 					panel_register.setRequestFocusEnabled(true);
+					
 					}
 				}else if(transection_status==1){
 					panel_register.setRequestFocusEnabled(false);
@@ -400,6 +416,7 @@ public class SecondWindow extends JFrame implements KeyListener{
 					invoiceStepTwo();
 					invoicemake();
 					panel_register.setRequestFocusEnabled(true);
+					
 					}
 				}else if(transection_status==1){
 					panel_register.setRequestFocusEnabled(false);
@@ -411,92 +428,6 @@ public class SecondWindow extends JFrame implements KeyListener{
 				}
 			}
 		});		
-		
-		JPanel panel_history = new JPanel();
-		panel_history.setBorder(new MatteBorder(0, 3, 0, 3, (Color) new Color(0, 0, 0)));
-		panel_history.setBackground(new Color(0, 204, 255));
-		panel_history.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				panel_history.setVisible(false);
-			}
-		});
-		panel_history.setVisible(false);
-		
-		JPanel panel_name = new JPanel();
-		panel_name.setBorder(new MatteBorder(0, 3, 0, 3, (Color) new Color(0, 0, 0)));
-		panel_name.setBounds(10, 13, 430, 137);
-		panel_register.add(panel_name);
-		panel_name.setLayout(null);
-		
-		
-		JLabel lblHandcraftedLabPvt = new JLabel("");
-		lblHandcraftedLabPvt.setText("<html><p><center>"+"StoreDesk POS System <br>January 31th, 2018<br>4:55PM</center></p></html>");
-		lblHandcraftedLabPvt.setHorizontalAlignment(SwingConstants.CENTER);
-		lblHandcraftedLabPvt.setFont(new Font("Tahoma", Font.BOLD, 20));
-		lblHandcraftedLabPvt.setBounds(0, 0, 430, 137);
-		panel_name.add(lblHandcraftedLabPvt);
-		panel_history.setBounds(12, 13, 430, 137);
-		panel_register.add(panel_history);
-		panel_history.setLayout(null);
-		
-		
-		JLabel lblTotalItems = new JLabel("Total Items");
-		lblTotalItems.setFont(new Font("Tahoma", Font.PLAIN, 17));
-		lblTotalItems.setBounds(10, 0, 122, 29);
-		panel_history.add(lblTotalItems);
-		
-		JLabel lblTotalAmount = new JLabel("Total Amount");
-		lblTotalAmount.setFont(new Font("Tahoma", Font.PLAIN, 17));
-		lblTotalAmount.setBounds(10, 31, 122, 31);
-		panel_history.add(lblTotalAmount);
-		
-		JLabel lblBillNo = new JLabel("Bill No");
-		lblBillNo.setFont(new Font("Tahoma", Font.PLAIN, 17));
-		lblBillNo.setBounds(10, 64, 122, 31);
-		panel_history.add(lblBillNo);
-		
-		lbl_last_BNO= new JLabel();
-		lbl_last_BNO.setHorizontalAlignment(SwingConstants.CENTER);
-		lbl_last_BNO.setFont(new Font("Tahoma", Font.BOLD, 20));
-		lbl_last_BNO.setBounds(144, 64, 141, 31);
-		panel_history.add(lbl_last_BNO);
-		
-		lbl_last_tot_amt = new JLabel();
-		lbl_last_tot_amt.setHorizontalAlignment(SwingConstants.CENTER);
-		lbl_last_tot_amt.setBounds(144, 31, 141, 31);
-		panel_history.add(lbl_last_tot_amt);
-		lbl_last_tot_amt.setFont(new Font("Tahoma", Font.BOLD, 20));
-		
-		lbl_last_tot_itm= new JLabel();
-		lbl_last_tot_itm.setHorizontalAlignment(SwingConstants.CENTER);
-		lbl_last_tot_itm.setBounds(144, 0, 141, 29);
-		panel_history.add(lbl_last_tot_itm);
-		lbl_last_tot_itm.setBackground(Color.LIGHT_GRAY);
-		lbl_last_tot_itm.setFont(new Font("Tahoma", Font.BOLD, 20));
-		
-		JLabel label = new JLabel("Total Quantity");
-		label.setBounds(10, 95, 136, 29);
-		panel_history.add(label);
-		label.setFont(new Font("Tahoma", Font.BOLD, 14));
-		
-		lbl_total_qua = new JLabel("");
-		lbl_total_qua.setHorizontalAlignment(SwingConstants.CENTER);
-		lbl_total_qua.setBounds(144, 95, 136, 29);
-		panel_history.add(lbl_total_qua);
-		lbl_total_qua.setFont(new Font("Tahoma", Font.BOLD, 18));
-		
-		JLabel lblChange = new JLabel("Change");
-		lblChange.setHorizontalAlignment(SwingConstants.CENTER);
-		lblChange.setBounds(297, 13, 133, 29);
-		panel_history.add(lblChange);
-		lblChange.setFont(new Font("Tahoma", Font.BOLD, 16));
-		
-		lbl_change = new JLabel();
-		lbl_change.setHorizontalAlignment(SwingConstants.CENTER);
-		lbl_change.setBounds(289, 64, 141, 39);
-		panel_history.add(lbl_change);
-		lbl_change.setFont(new Font("Arial Black", Font.BOLD, 20));
 		
 		JPanel panel_leftAllBtn = new JPanel();
 		panel_leftAllBtn.setBackground(new Color(30, 144, 255));
@@ -523,6 +454,10 @@ public class SecondWindow extends JFrame implements KeyListener{
 		btnReprintReciept.setFont(new Font("Tahoma", Font.BOLD, 20));
 		
 		JButton button = new JButton("+");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
 		button.setBackground(new Color(51, 204, 0));
 		button.setFont(new Font("Stencil Std", Font.PLAIN, 40));
 		button.setBounds(12, 0, 180, 117);
@@ -608,11 +543,28 @@ public class SecondWindow extends JFrame implements KeyListener{
 		panel_Top_btn.setLayout(null);
 		
 		JButton btnEnterQuantity = new JButton("UPC");
+		btnEnterQuantity.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				funbarcode(textField_focus.getText());
+			}
+		});
 		btnEnterQuantity.setBounds(0, 0, 153, 62);
 		panel_Top_btn.add(btnEnterQuantity);
 		btnEnterQuantity.setFont(new Font("Tahoma", Font.BOLD, 20));
 		
 		JButton btnNewButton = new JButton("Product Number");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+				     Integer.parseInt(textField_focus.getText());
+				     function109(Integer.valueOf(textField_focus.getText()));
+				}
+				catch (NumberFormatException e) {
+					JOptionPane.showMessageDialog(null, "Only Numbers allows in barcode Field");
+				}
+				
+			}
+		});
 		btnNewButton.setBounds(165, 0, 224, 62);
 		panel_Top_btn.add(btnNewButton);
 		btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 20));
@@ -631,25 +583,14 @@ public class SecondWindow extends JFrame implements KeyListener{
 	        	textField_focus.setText(null);	        	
 	        }});
 		textField_focus.setColumns(10);
-		//textField_focus.setVisible(false);
-		
-		textField_focus_2 = new JTextField();
-		textField_focus_2.setBounds(0, 75, 389, 62);
-		panel_Top_btn.add(textField_focus_2);
-		textField_focus_2.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		textField_focus_2.setForeground(SystemColor.inactiveCaption);
-		textField_focus_2.setBackground(Color.WHITE);
-		
-		textField_focus_2.addActionListener(new ActionListener(){
-
-	        public void actionPerformed(ActionEvent e){
-	        	
-	             funbarcode(textField_focus_2.getText());
-	             textField_focus_2.setText(null);
-	        }});
-		textField_focus_2.setColumns(10);
 		
 		JButton btnName = new JButton("Name");
+		btnName.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Find fi = new Find(textField_focus.getText());
+				fi.setVisible(true);
+			}
+		});
 		btnName.setFont(new Font("Tahoma", Font.BOLD, 20));
 		btnName.setBounds(401, 2, 153, 62);
 		panel_Top_btn.add(btnName);
@@ -792,44 +733,116 @@ public class SecondWindow extends JFrame implements KeyListener{
 		panel_remain.setBackground(new Color(51, 102, 204));
 		panel_remain.setBounds(1325, 923, 575, 99);
 		panel_register.add(panel_remain);
-		panel_remain.setLayout(null);
 		panel_remain.setVisible(false);
+		panel_remain.setLayout(null);
+		
 		
 		JLabel label_1 = new JLabel("By Cash ");
 		label_1.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		label_1.setBounds(12, 15, 119, 30);
+		label_1.setBounds(53, 11, 77, 25);
 		panel_remain.add(label_1);
 		
 		lbl_final_cash_pay = new JLabel("0.00");
 		lbl_final_cash_pay.setFont(new Font("Tahoma", Font.BOLD, 20));
-		lbl_final_cash_pay.setBounds(143, 15, 145, 30);
+		lbl_final_cash_pay.setBounds(166, 11, 154, 25);
 		panel_remain.add(lbl_final_cash_pay);
 		
 		lbl_final_card_pay = new JLabel("0.00");
 		lbl_final_card_pay.setFont(new Font("Tahoma", Font.BOLD, 20));
-		lbl_final_card_pay.setBounds(143, 58, 145, 30);
+		lbl_final_card_pay.setBounds(166, 49, 154, 25);
 		panel_remain.add(lbl_final_card_pay);
 		
 		JLabel label_4 = new JLabel("By Card");
 		label_4.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		label_4.setBounds(12, 58, 119, 30);
+		label_4.setBounds(53, 49, 69, 25);
 		panel_remain.add(label_4);
 		
 		JLabel label_5 = new JLabel("Remaning");
 		label_5.setHorizontalAlignment(SwingConstants.CENTER);
 		label_5.setFont(new Font("Tahoma", Font.BOLD, 25));
-		label_5.setBounds(300, 13, 241, 30);
+		label_5.setBounds(347, 6, 216, 31);
 		panel_remain.add(label_5);
 		
 		lbl_final_remain = new JLabel("0.00");
 		lbl_final_remain.setHorizontalAlignment(SwingConstants.CENTER);
 		lbl_final_remain.setForeground(Color.WHITE);
 		lbl_final_remain.setFont(new Font("Tahoma", Font.BOLD, 30));
-		lbl_final_remain.setBounds(300, 51, 241, 43);
+		lbl_final_remain.setBounds(347, 49, 216, 37);
 		panel_remain.add(lbl_final_remain);
+		
+		panel_card = new JPanel();
+		panel_card.setBounds(10, 13, 432, 137);
+		panel_register.add(panel_card);
+		panel_card.setLayout(new CardLayout(0, 0));
+		
+		panel_name = new JPanel();
+		panel_card.add(panel_name, "name_765758589145851");
+		panel_name.setBorder(new MatteBorder(0, 3, 0, 3, (Color) new Color(0, 0, 0)));
+		
+			
+			
+			JLabel lblHandcraftedLabPvt = new JLabel("");
+			lblHandcraftedLabPvt.setText("<html><p><center>"+"StoreDesk POS System <br>January 31th, 2018<br>4:55PM</center></p></html>");
+			lblHandcraftedLabPvt.setHorizontalAlignment(SwingConstants.CENTER);
+			lblHandcraftedLabPvt.setFont(new Font("Tahoma", Font.BOLD, 20));
+			panel_name.add(lblHandcraftedLabPvt, "name_764376709135235");
+			
+			panel_history = new JPanel();
+			panel_card.add(panel_history, "name_765769698666538");
+			panel_history.setBorder(new MatteBorder(0, 3, 0, 3, (Color) new Color(0, 0, 0)));
+			panel_history.setBackground(new Color(0, 204, 255));
+			panel_history.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent arg0) {
+					panel_history.setVisible(false);
+				}
+			});
+				panel_history.setLayout(null);
+				
+				JLabel lblTotalAmount = new JLabel("Total Amount");
+				lblTotalAmount.setBounds(32, 69, 101, 21);
+				lblTotalAmount.setFont(new Font("Tahoma", Font.PLAIN, 17));
+				panel_history.add(lblTotalAmount);
+				
+				JLabel label = new JLabel("Total Quantity");
+				label.setBounds(32, 9, 99, 33);
+				panel_history.add(label);
+				label.setFont(new Font("Tahoma", Font.BOLD, 14));
+				
+				JLabel lblBillNo = new JLabel("Bill No");
+				lblBillNo.setBounds(32, 103, 47, 21);
+				lblBillNo.setFont(new Font("Tahoma", Font.PLAIN, 17));
+				panel_history.add(lblBillNo);
+				
+				JLabel lblChange = new JLabel("Change");
+				lblChange.setBounds(322, 6, 61, 20);
+				lblChange.setHorizontalAlignment(SwingConstants.CENTER);
+				panel_history.add(lblChange);
+				lblChange.setFont(new Font("Tahoma", Font.BOLD, 16));
+				
+				lbl_last_BNO = new JLabel("");
+				lbl_last_BNO.setFont(new Font("Tahoma", Font.PLAIN, 20));
+				lbl_last_BNO.setBounds(154, 104, 123, 20);
+				panel_history.add(lbl_last_BNO);
+				
+				lbl_last_tot_amt= new JLabel("");
+				lbl_last_tot_amt.setFont(new Font("Tahoma", Font.PLAIN, 20));
+				lbl_last_tot_amt.setBounds(154, 70, 123, 21);
+				panel_history.add(lbl_last_tot_amt);
+				
+				lbl_last_tot_itm = new JLabel("");
+				lbl_last_tot_itm.setFont(new Font("Tahoma", Font.PLAIN, 20));
+				lbl_last_tot_itm.setBounds(143, 13, 123, 29);
+				panel_history.add(lbl_last_tot_itm);
+				
+				lbl_change = new JLabel("");
+				lbl_change.setFont(new Font("Tahoma", Font.PLAIN, 30));
+				lbl_change.setHorizontalAlignment(SwingConstants.CENTER);
+				lbl_change.setBounds(278, 43, 142, 51);
+				panel_history.add(lbl_change);
 		btn_find.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Find fi = new Find();
+				Find fi = new Find(textField_focus.getText());
 				fi.requestFocus();
 				fi.setVisible(true);
 			}
@@ -841,24 +854,12 @@ public class SecondWindow extends JFrame implements KeyListener{
 			rt.setVisible(true);
 			}
 		});
-		textField_focus_2.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent arg2) {
-				if(arg2.getKeyCode()==032)
-				{
-					int no;
-					no=getnum("Enter Item Number");
-					function109(no);
-					textField_focus_2.setText(null);
-				}
-			}
-		});
 		
 		textField_focus.addKeyListener(new KeyAdapter() {
 			
 			@Override
 			public void keyPressed(KeyEvent arg0) {
-				
+				igotfocus=true;
 				if(arg0.getKeyCode()==032)
 				{
 					int no;
@@ -927,16 +928,18 @@ public class SecondWindow extends JFrame implements KeyListener{
 
 	
 	protected void invoicemake() {
-		JOptionPane.showMessageDialog(null, "in making");
 		if(invdone==true){
-			JOptionPane.showMessageDialog(null, "in making in==true");
-			lbl_last_tot_itm.setText(String.valueOf(getquan()));
+		lbl_last_tot_itm.setText(String.valueOf(getquan()));
 		lbl_last_tot_amt.setText(String.valueOf(df.format(final_total_amount)));
 		lbl_change.setText(String.valueOf(df.format(reminder)));
 		transection_status=0;
 		insert_invoice();
 		filewriter();
 		clearpage();
+		panel_name.setVisible(false);
+		panel_history.setVisible(true);
+		}else {
+			panel_remain.setVisible(true);
 		}
 	}
 
@@ -966,7 +969,8 @@ public class SecondWindow extends JFrame implements KeyListener{
 			total_discount=total_discount+discountamountlist[i];
 		}
 		String query="INSERT INTO `invoice`(`Employee_id`, `Total_Quantity`, `Total_discount`, `Total_tax`, `Final_amount`, `Cash_Recieve`, `Card_payment`, `Other_recieve`, `Remain_change`) "
-				+ "VALUES ("+emp_id+","+ccquan+","+total_discount+","+lbl_final_tax_tot.getText()+","+lbl_final_total.getText()+",)";
+				+ "VALUES ("+emp_id+","+ccquan+","+total_discount+","+lbl_final_tax_tot.getText()+","
+				+lbl_final_total.getText()+","+cash_recieve_main+","+card_recieve_main+","+other_recieve_main+","+remain_change_main+")";
 		try {
 			
 		    PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
@@ -1189,9 +1193,7 @@ public class SecondWindow extends JFrame implements KeyListener{
 	}
 	public void invoiceStepTwo()
 	{
-		if(invdone==false) {
-			
-		
+		if(invdone==false) {	
 			double rmvalue;
 		 if(option_payment==0)
 			{
@@ -1210,7 +1212,6 @@ public class SecondWindow extends JFrame implements KeyListener{
 	{
 		if(payment_recieve_cashier == final_recieve_amount)
 		{
-			JOptionPane.showMessageDialog(null, "rr=mm=final==="+payment_recieve_cashier+"==="+method_pay+"==="+final_recieve_amount);
 			invdone=true;
 			entered_amount=payment_recieve_cashier;
 			remaining_change=final_recieve_amount-payment_recieve_cashier;
@@ -1218,20 +1219,23 @@ public class SecondWindow extends JFrame implements KeyListener{
 			this.lbl_last_tot_amt.setText(String.valueOf(final_recieve_amount));
 			this.lbl_last_tot_itm.setText(String.valueOf(getquan()));
 			reminder=final_recieve_amount-payment_recieve_cashier;	
+			remain_change_main=reminder;
+			
+			
 		}
 		else if(payment_recieve_cashier > final_recieve_amount)
 		{
-			JOptionPane.showMessageDialog(null, "rr=mm=final==="+payment_recieve_cashier+"==="+method_pay+"==="+final_recieve_amount);
-			invdone=true;
+		 	invdone=true;
 			entered_amount=payment_recieve_cashier;
 			remaining_change=payment_recieve_cashier-final_recieve_amount;
 			option_payment=method_pay;
 			this.lbl_last_tot_amt.setText(String.valueOf(final_recieve_amount));
 			this.lbl_last_tot_itm.setText(String.valueOf(getquan()));
 			reminder=payment_recieve_cashier-final_recieve_amount;
+			remain_change_main=reminder;
+			
 		}else if(payment_recieve_cashier < final_recieve_amount)
 		{
-			JOptionPane.showMessageDialog(null, "rr=mm=final==="+payment_recieve_cashier+"==="+method_pay+"==="+final_recieve_amount);
 			entered_amount=payment_recieve_cashier;
 			remaining_change=final_recieve_amount-payment_recieve_cashier;
 			option_payment=method_pay;
@@ -1306,7 +1310,7 @@ public class SecondWindow extends JFrame implements KeyListener{
 				discounttype[i]=discounttype[i+1];
 				discount[i]=discount[i+1];
 			}
-			int temp_qua = Integer.valueOf(lbl_total_qua.getText())-1;
+			int temp_qua = Integer.valueOf(lbl_final_total_qua.getText())-1;
 		    lbl_final_total_qua.setText(String.valueOf(temp_qua));
 		lablefill();	
 		}
@@ -1315,17 +1319,20 @@ public class SecondWindow extends JFrame implements KeyListener{
 	{
 		invdone=false;
 		((DefaultTableModel) table_void.getModel()).setRowCount(0);
-		lbl_total_qua.setText(null);
+		lbl_final_total_qua.setText(null);
 		lbl_final_card_pay.setText("0.00");
 	    lbl_final_cash_pay.setText("0.00");
 	    lbl_final_remain.setText("0.00");
 	    lbl_final_sub_tot.setText("0.00");
 	    lbl_final_tax_tot.setText("0.00");
 	    lbl_final_total.setText("0.00");
+	    lbl_final_total_qua.setText("0");
 	    final_total_amount=0;
 		listcounter=-1;	
 		((DefaultTableModel) table_register.getModel()).setRowCount(0);
 		textField_focus.requestFocus();
+		panel_remain.setVisible(false);
+		
 	}
 	
 	public void lablefill()
@@ -1338,8 +1345,8 @@ public class SecondWindow extends JFrame implements KeyListener{
 		double total_a=Double.valueOf(getamount());
 		final_total_amount=total_a+Double.valueOf(df.format(taxcal));
 		textField_focus.requestFocus();
-		lbl_total_qua.setText(String.valueOf(Integer.valueOf(getquan())));
-		
+		lbl_final_total_qua.setText(String.valueOf(Integer.valueOf(getquan())));
+		lbl_final_total_qua.setText(String.valueOf(Integer.valueOf(getquan())));
 		lbl_final_sub_tot.setText(String.valueOf(df.format(getamount())));
 		lbl_final_tax_tot.setText(df.format(taxcal));
 		lbl_final_total.setText(String.valueOf(df.format(final_total_amount)));
@@ -1350,34 +1357,59 @@ public class SecondWindow extends JFrame implements KeyListener{
 				double finalp=0.0;
 				int lastQ=0;
 				DefaultTableModel model = (DefaultTableModel)table_register.getModel();
-				if(tcounter==true)
-				{
+				if(tcounter==true)				{
 					lastQ=Integer.valueOf(String.valueOf(table_register.getModel().getValueAt(table_register.getRowCount()-1, 0)));
-					
 					model.removeRow(table_register.getRowCount()-1);
-				}				else				{
+				}else{
 					lastQ=1;
 				}
 				tcounter=false;
-				s4=conn.prepareStatement("SELECT items.Item_id,items.Item_Name,item_packing.Item_packing_type, item_price.Item_retail_price,Items.Tax_id, tax.Type,tax.Per "
-						+ "FROM items left outer join `item_quantity_matrix` on items.Item_id = item_quantity_matrix.item_id left outer join item_price  on items.Item_id = item_price.Item_id LEFT OUTER JOIN tax on items.Tax_id = tax.Tax_id left outer join item_packing on item_quantity_matrix.Size_id=item_packing.Item_packing_id WHERE items.`item_id` ="+no);
-				r3=s4.executeQuery();
-				Object[] list = new Object[10]; 
-				int listi=0;
-				while(r3.next())
-				{
-					list[listi]=r3.getString("Item_packing_type");
-					listi++;
-				}
-				int returnValue = JOptionPane.showOptionDialog(null, "Select Size", "Sizes",
-				        JOptionPane.WARNING_MESSAGE, 0, null, list, null);
-				if(returnValue==1)
-				r3.beforeFirst();
+				s4=conn.prepareStatement("SELECT items.Item_id,items.Item_Name,item_packing.Item_packing_type, item_price.Item_retail_price,item_quantity_matrix.Price,Items.Tax_id, tax.Type,tax.Per "
+						+ "FROM items left outer join `item_quantity_matrix` on items.Item_id = item_quantity_matrix.item_id left outer join item_price  "
+						+ "on items.Item_id = item_price.Item_id LEFT OUTER JOIN tax on items.Tax_id = tax.Tax_id left outer join item_packing "
+						+ "on item_quantity_matrix.Size_id=item_packing.Item_packing_id WHERE items.`item_number` ="+no);
 				
-				if(returnValue==0)
-				{}
-					
-						double pri =Double.parseDouble(r3.getString("Item_retail_price"));
+				r3=s4.executeQuery();
+				System.out.println(s4);
+				if(r3.isBeforeFirst()) {
+					boolean b = r3.last();
+			        int numberOfRecords = 0;
+			        numberOfRecords = r3.getRow();
+			        r3.beforeFirst();
+			        
+			        if(numberOfRecords==1){
+			        	while(r3.next())
+							{
+								model.addRow(new Object[]{lastQ,r3.getString("item_name"),r3.getDouble("Item_retail_price"),0.0,df.format(finalp)});
+								 double pri =Double.parseDouble(r3.getString("Item_retail_price"));
+									if(pri==0 || pri == 0.0)
+									{ 	
+										pp =Double.valueOf(checkdouble("Enter Price"));
+										model.setValueAt(pp, model.getRowCount()-1, 2);
+										finalp=pp*lastQ;
+									}else
+									{
+										finalp=Double.valueOf(r3.getString("Item_retail_price"))*lastQ;
+									}
+									
+									model.setValueAt(finalp, model.getRowCount()-1, 4);
+								listfiller(Integer.valueOf(r3.getString("Item_id")), Integer.valueOf(r3.getString("Tax_id")), 0.0,finalp,Double.valueOf(r3.getString("per")));
+							}
+			        }else{
+			        	int i=0;
+			        	String sizedata[]={"", "", "", "","","","","","",""};
+						while (r3.next()) {
+							//JOptionPane.showMessageDialog(null, "from rs="+r3.getString("Item_packing_type"));
+						    String em = r3.getString("Item_packing_type");
+						    sizedata[i]=em;
+						    i++;
+						}
+						int returnValue = JOptionPane.showOptionDialog(null, "Select Size you want?"  , "Product Size", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE 
+			                      , null, sizedata, "aaa");
+						r3.beforeFirst();
+			        	r3.absolute(returnValue+1);
+			        
+			        	double pri =Double.parseDouble(r3.getString("Price"));
 						if(pri==0 || pri == 0.0)
 						{ 	
 							pp =Double.valueOf(checkdouble("Enter Price"));
@@ -1385,20 +1417,23 @@ public class SecondWindow extends JFrame implements KeyListener{
 							model.addRow(new Object[]{lastQ,r3.getString("item_name"),pp,0.0,df.format(finalp)});
 						}else
 						{
-							finalp=Double.valueOf(r3.getString("Item_retail_price"))*lastQ;
-							model.addRow(new Object[]{lastQ,r3.getString("item_name"),r3.getString("Item_retail_price"),0.0,df.format(finalp)});
+							finalp=Double.valueOf(r3.getString("Price"))*lastQ;
+							model.addRow(new Object[]{lastQ,r3.getString("item_name"),r3.getString("Price"),0.0,df.format(finalp)});
 						}
 						listfiller(Integer.valueOf(r3.getString("Item_id")), Integer.valueOf(r3.getString("Tax_id")), 0.0,finalp,Double.valueOf(r3.getString("Per")));
 					
 					Itemno.setText(null);
 					Price.setText(null);
-        		
-			} catch (SQLException e2) {
-					// TODO Auto-generated catch block
+			        }
+				}	
+	} 
+			catch (SQLException e2) 
+			{
+				System.out.println(e2);
 					e2.printStackTrace();
 				}
 	catch(Exception d){
-		JOptionPane.showMessageDialog(null, d.getMessage());
+		System.out.println(d);
 	}
 	lablefill();
 	}
@@ -1437,7 +1472,10 @@ public class SecondWindow extends JFrame implements KeyListener{
 	
 	public void FinditemNumber(int itnumber)
 	{
+		JOptionPane.showMessageDialog(null, "got from find it no = "+itnumber);
 		numberfromfind=itnumber;
+		textField_focus.setText(String.valueOf(numberfromfind));
+		JOptionPane.showMessageDialog(null, "current textbo = "+textField_focus.getText());
 		function109(numberfromfind);
 	}
 	public void funbarcode(String barcode_tex)
@@ -1446,7 +1484,7 @@ public class SecondWindow extends JFrame implements KeyListener{
 			String temp=barcode_tex;
 			if(temp!=null)
 			{
-			float pp=(float) 0.0;
+			double pp= 0.0;
 			double finalp=0.0;
 			int lastQ=0;
 			if(tcounter==true)
@@ -1473,19 +1511,35 @@ public class SecondWindow extends JFrame implements KeyListener{
 			        int numberOfRecords = 0;
 			        numberOfRecords = r3.getRow();
 			        r3.beforeFirst();
+			        
 			        if(numberOfRecords==1){
-			        	JOptionPane.showMessageDialog(null, numberOfRecords);
+			        	while(r3.next())
+							{
+								model.addRow(new Object[]{lastQ,r3.getString("item_name"),r3.getDouble("Item_retail_price"),0.0,df.format(finalp)});
+								 double pri =Double.parseDouble(r3.getString("Item_retail_price"));
+									if(pri==0 || pri == 0.0)
+									{ 	
+										pp =Double.valueOf(checkdouble("Enter Price"));
+										model.setValueAt(pp, model.getRowCount()-1, 2);
+										finalp=pp*lastQ;
+									}else
+									{
+										finalp=Double.valueOf(r3.getString("Item_retail_price"))*lastQ;
+									}
+									
+									model.setValueAt(finalp, model.getRowCount()-1, 4);
+								listfiller(Integer.valueOf(r3.getString("Item_id")), Integer.valueOf(r3.getString("Tax_id")), 0.0,finalp,Double.valueOf(r3.getString("per")));
+							}
 			        }else{
 			        	JOptionPane.showMessageDialog(null, "More then one record found = "+numberOfRecords);
 			        }
-				while(r3.next())
-				{
-					finalp=Double.valueOf(r3.getString("Item_retail_price"))*lastQ;
-					model.addRow(new Object[]{lastQ,r3.getString("item_name"),r3.getDouble("Item_retail_price"),0.0,df.format(finalp)});
-					listfiller(Integer.valueOf(r3.getString("Item_id")), Integer.valueOf(r3.getString("Tax_id")), 0.0,finalp,Double.valueOf(r3.getString("per")));
-				}
+			        
 				}else {
-					JOptionPane.showMessageDialog(null, "Item Not Found");
+					int opt1=JOptionPane.showConfirmDialog(null, "Item Barcode not found, DO YOU WANT FIND IN ITEM NUMBER???", "Find in Item Number List",
+					        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+					if(opt1==JOptionPane.YES_OPTION) {
+						function109(Integer.valueOf(temp));
+					}
 				}
 				
 				Itemno.setText(null);

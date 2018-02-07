@@ -1,5 +1,5 @@
 package FindItems;
-
+import Connect.*;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.stream.IntStream;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -31,10 +32,14 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.Font;
+import javax.swing.ListSelectionModel;
+import javax.swing.JLabel;
 
 public class Find extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
+	static String name;
 	Connection conn=null;
 	PreparedStatement st=null,s2,s3,s4;
 	java.sql.Statement st1;
@@ -50,7 +55,7 @@ public class Find extends JDialog {
 	 */
 	public static void main(String[] args) {
 		try {
-			Find dialog = new Find();
+			Find dialog = new Find(name);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -60,25 +65,20 @@ public class Find extends JDialog {
 
 	/**
 	 * Create the dialog.
+	 * @param string 
 	 */
-	public Find() {
+	public Find(String name) {
 		
-		try{
-	    	conn = (Connection) ConnectionManager.getConnection();
-				 }catch(Exception e1){
-					 e1.printStackTrace();
-				 }
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		int wid = screenSize.width;
-		int hei = screenSize.height;
+		conn=ConnectionManager.getConnection();
 		
-		setBounds(0, 0, wid, hei);
+		setBounds(0, 0, 1364, 722);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 		
 		txt_upc = new JTextField();
+		txt_upc.setFont(new Font("Tahoma", Font.PLAIN, 25));
 		txt_upc.addActionListener(new ActionListener(){
 
 	        public void actionPerformed(ActionEvent e){
@@ -88,12 +88,13 @@ public class Find extends JDialog {
 					searchtable(Integer.valueOf(temp),1);
 				}	        	
 	        }});
-		txt_upc.setBounds(10, 11, 86, 20);
+		txt_upc.setBounds(10, 35, 289, 58);
 		contentPanel.add(txt_upc);
 		txt_upc.setColumns(10);
 		
 		txt_number = new JTextField();
-		txt_number.setBounds(106, 11, 86, 20);
+		txt_number.setFont(new Font("Tahoma", Font.PLAIN, 25));
+		txt_number.setBounds(357, 35, 289, 58);
 		txt_number.addKeyListener(new KeyAdapter() {
 			
 			
@@ -111,7 +112,8 @@ public class Find extends JDialog {
 		txt_number.setColumns(10);
 		
 		txt_name = new JTextField();
-		txt_name.setBounds(202, 11, 246, 20);
+		txt_name.setFont(new Font("Tahoma", Font.PLAIN, 25));
+		txt_name.setBounds(726, 35, 585, 58);
 		txt_name.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
@@ -119,13 +121,18 @@ public class Find extends JDialog {
 			}
 		});
 		contentPanel.add(txt_name);
+		//JOptionPane.showMessageDialog(null, name);
 		txt_name.setColumns(10);
 		
+		
+		
 		scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 46, 730, 356);
+		scrollPane.setBounds(10, 106, 1302, 476);
 		contentPanel.add(scrollPane);
 		
 		table_list = new JTable();
+		table_list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		table_list.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		table_list.setModel(new DefaultTableModel(
 				new Object[][] {
 				},
@@ -139,93 +146,45 @@ public class Find extends JDialog {
 				int row = table_list.getSelectedRow();
 				String value=(String) table_list.getModel().getValueAt(row, 0);
 				SecondWindow sw = new SecondWindow();
+				setBounds(0,0,0,0);
 				sw.FinditemNumber(Integer.valueOf(value));
 				dispose();
 			}
 		});
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+		table_list.setRowHeight(30);
 		scrollPane.setViewportView(table_list);
-		{
-			JPanel buttonPane = new JPanel();
-			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-			getContentPane().add(buttonPane, BorderLayout.SOUTH);
-			{
-				JButton okButton = new JButton("OK");
-				okButton.setActionCommand("OK");
-				buttonPane.add(okButton);
-				getRootPane().setDefaultButton(okButton);
-			}
-			{
-				JButton cancelButton = new JButton("Cancel");
-				cancelButton.setActionCommand("Cancel");
-				buttonPane.add(cancelButton);
-			}
+		
+		JButton btnSelectProduct = new JButton("Select Product");
+		btnSelectProduct.setBounds(10, 595, 198, 67);
+		contentPanel.add(btnSelectProduct);
+		
+		JButton btnClose = new JButton("Close");
+		btnClose.setBounds(225, 595, 198, 67);
+		contentPanel.add(btnClose);
+		
+		JLabel lblSearchByName = new JLabel("Search by Name");
+		lblSearchByName.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		lblSearchByName.setBounds(726, 6, 329, 25);
+		contentPanel.add(lblSearchByName);
+		
+		JLabel lblSearchByProduct = new JLabel("Search by Product ID");
+		lblSearchByProduct.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		lblSearchByProduct.setBounds(357, 6, 225, 25);
+		contentPanel.add(lblSearchByProduct);
+		
+		JLabel lblSearchByUpc = new JLabel("Search by UPC Code");
+		lblSearchByUpc.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		lblSearchByUpc.setBounds(10, 6, 225, 23);
+		contentPanel.add(lblSearchByUpc);
+		
+		
+		int a=name.length();
+		if(a>0){
+			txt_name.setText(name);
+			bindtablename();
 		}
+		
+		
 	}
 	void searchtable(int temp,int opt)
 	{
